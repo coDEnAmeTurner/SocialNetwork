@@ -18,9 +18,11 @@ import com.tlqt.services.UserService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Map;
+import javax.persistence.NoResultException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -54,22 +56,41 @@ public class APIUserController {
 
     @PostMapping(path = "/users/", consumes = {
         MediaType.APPLICATION_FORM_URLENCODED_VALUE,
-        MediaType.MULTIPART_FORM_DATA_VALUE,
-    })
+        MediaType.MULTIPART_FORM_DATA_VALUE,})
     @CrossOrigin
     @ResponseStatus(HttpStatus.CREATED)
-    public void create(@RequestParam("file") MultipartFile file, @RequestParam Map<String, String> newUser) throws ParseException {
+    public ResponseEntity create(@RequestParam("file") MultipartFile file, @RequestParam Map<String, String> newUser) throws ParseException {
+        String userNameStr = newUser.get("username");
+        String emailStr = newUser.get("email");
+        
+        try {
+            if (userService.getUserByUsername(userNameStr) != null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Username has already been taken"));
+            }
+            
+        } catch (NoResultException nre) {
+        }
+
+        try {
+            if (userService.getUserByEmail(emailStr) != null) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Message("Email has already been taken"));
+            }
+            
+        } catch (NoResultException nre) {
+        }
+        
         User user = new User();
         user.setFullName(newUser.get("fullName"));
-        user.setUsername(newUser.get("username"));
+        user.setUsername(userNameStr);
         user.setPassword(newUser.get("pw"));
-        user.setEmail(newUser.get("email"));
+        user.setEmail(emailStr);
         user.setPhone(newUser.get("phone"));
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
         user.setDob(dateFormatter.parse(newUser.get("dob")));
         user.setUserRole(userRoleService.getUserRoleById(2));
-        if (!file.isEmpty())
+        if (!file.isEmpty()) {
             user.setFile(file);
+        }
 
         this.userService.addUser(user);
 
@@ -91,5 +112,7 @@ public class APIUserController {
         alumnus.setStudentId(newUser.get("studentId"));
 
         this.alumnnService.addAlumnus(alumnus);
+        
+        return null;
     }
 }
