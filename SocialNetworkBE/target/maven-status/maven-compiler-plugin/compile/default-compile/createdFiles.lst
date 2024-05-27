@@ -10,6 +10,7 @@ com\tlqt\pojo\Invitation.class
 com\tlqt\repositories\UserRepository.class
 com\tlqt\services\impl\UserRoleServiceImpl.class
 com\tlqt\services\impl\AcademicRankServiceImpl.class
+com\tlqt\exceptions\EmailExistedException.class
 com\tlqt\repositories\impl\UserRoleRepositoryImpl.class
 com\tlqt\pojo\ActionPostPK.class
 com\tlqt\pojo\Admin.class
@@ -17,6 +18,7 @@ com\tlqt\pojo\Action.class
 com\tlqt\configs\SecurityWebApplicationInitializer.class
 com\tlqt\pojo\Degree.class
 com\tlqt\services\impl\UserServiceImpl.class
+com\tlqt\controllers\Message.class
 com\tlqt\pojo\Comment.class
 com\tlqt\pojo\AcademicRank.class
 com\tlqt\pojo\Choice.class
@@ -37,6 +39,7 @@ com\tlqt\services\impl\DegreeServiceImpl.class
 com\tlqt\pojo\User_.class
 com\tlqt\repositories\AlumnusRepository.class
 com\tlqt\services\DegreeService.class
+com\tlqt\exceptions\UsernameExistedException.class
 com\tlqt\pojo\Post.class
 com\tlqt\pojo\TypicalUser.class
 com\tlqt\repositories\impl\UserRepositoryImpl.class

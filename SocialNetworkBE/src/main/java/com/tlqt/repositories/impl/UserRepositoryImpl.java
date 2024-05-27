@@ -36,7 +36,7 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public User getUserByUsername(String username) {
         Session s = this.factory.getObject().getCurrentSession();
-        Query q = s.createQuery("From User Where username=:username");
+        Query q = s.createNamedQuery("User.findByUsername");
         q.setParameter("username", username);
         
         return (User) q.getSingleResult();        
@@ -46,6 +46,15 @@ public class UserRepositoryImpl implements UserRepository {
     public void addUser(User user) {
         Session s = this.factory.getObject().getCurrentSession();
         s.save(user);        
+    }
+
+    @Override
+    public User getUserByEmail(String email) {
+        Session s = this.factory.getObject().getCurrentSession();
+        Query q = s.createNamedQuery("User.findByEmail");
+        q.setParameter("email", email);
+        
+        return (User) q.getSingleResult();
     }
 
 }

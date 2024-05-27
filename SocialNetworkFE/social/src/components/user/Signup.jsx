@@ -1,4 +1,4 @@
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Image } from "react-bootstrap";
 import "./register.css";
 import { useFormik } from "formik";
@@ -10,6 +10,7 @@ const Register = () => {
   const [degreeList, setDegreeList] = useState([]);
   const [academicRankList, setAcademicRankList] = useState([]);
   const [avatar, setAvatar] = useState(null);
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const getDegrees = async () => {
@@ -49,9 +50,10 @@ const Register = () => {
         params: newUser
       });
       if (res.status === 201)
-        navigate("/login");
+        navigate("/login", );
     } catch (ex) {
-      console.error(ex);
+      console.log(ex);
+      setError(ex.response.data['message']);
     }
   }
 
@@ -122,6 +124,7 @@ const Register = () => {
   return (
     <section className="register-container">
       <div className="register-title"> Sign Up </div>
+      <div className="register-error"> {error} </div>
       <div className="register-input">
         <form onSubmit={(event) => { event.preventDefault(); formik.handleSubmit(event); }}>
           <Image src={avatar ? URL.createObjectURL(avatar) : "https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg"} />
