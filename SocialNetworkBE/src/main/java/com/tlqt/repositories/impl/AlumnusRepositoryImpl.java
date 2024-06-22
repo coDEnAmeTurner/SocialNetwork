@@ -9,6 +9,7 @@ import com.tlqt.pojo.TypicalUser;
 import com.tlqt.repositories.AlumnusRepository;
 import com.tlqt.repositories.TypicalUserRepository;
 import org.hibernate.Session;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.stereotype.Repository;
@@ -20,14 +21,30 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional
 @Repository
-public class AlumnusRepositoryImpl implements AlumnusRepository{
+public class AlumnusRepositoryImpl implements AlumnusRepository {
+
     @Autowired
     private LocalSessionFactoryBean factory;
 
     @Override
     public void addAlumnus(Alumnus alumnus) {
         Session s = this.factory.getObject().getCurrentSession();
-        s.save(alumnus);  
+        s.save(alumnus);
     }
-    
+
+    @Override
+    public Alumnus getAlumnusByTypicalUserId(int typicalUserId) {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        Query q = s.createNamedQuery("Alumnus.findByTypicalUserId");
+        q.setParameter("typicalUserId", typicalUserId);
+
+        return (Alumnus) q.getSingleResult();
+    }
+
+    @Override
+    public void update(Alumnus a) {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
 }

@@ -1,0 +1,25 @@
+export const postQueryIndex = {
+    'id': 0,
+    'title': 1,
+    "unlocked": 2,
+    "content": 3,
+    "contentTypeId": 4, 
+    "contentTypeName": 5,
+    "userId": 6,
+    "userFullName": 7,
+    "userAvatar": 8,
+    "username": 9,
+    "dob": 10,
+    "email": 11,
+    "phone": 12,
+    "imageId": 13,
+    "image": 14,
+    "location/surveyQuestionId": 15,
+    "dateTime/surveyQuestionContent": 16,
+    "choiceId": 17,
+    "choiceContent": 18,
+    "voteCount": 19,
+    "createdAt": 20,
+    "updatedAt": 21
+
+}

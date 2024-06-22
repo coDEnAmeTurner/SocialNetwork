@@ -4,6 +4,7 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -43,6 +44,8 @@ public class ContentType implements Serializable {
     @Size(max = 100)
     @Column(name = "name")
     private String name;
+    
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "contentTypeId")
     private Set<Post> postSet;
 

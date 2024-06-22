@@ -6,6 +6,7 @@ package com.tlqt.services;
 
 import com.tlqt.pojo.User;
 import java.util.List;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 /**
@@ -18,7 +19,24 @@ public interface UserService extends UserDetailsService {
 
     User getUserByUsername(String username);
 
+    User getUserByUsernameAndPassword(String username, String password);
+
     User getUserByEmail(String email);
 
     void addUser(User user);
+
+    boolean authUser(String username, String password);
+
+    public List<Object[]> getAlumniAndRelatedInfo();
+
+    public List<Object[]> getLecturersAndRelatedInfo();
+
+    User getAuthorByPostId(int postId);
+    
+    User getUserById(int id);
+    
+    User getUserByCommentId(int commentId);
+    
+    void update(User user, Boolean newPass);
+
 }

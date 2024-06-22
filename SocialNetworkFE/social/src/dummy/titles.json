@@ -1,0 +1,18 @@
+[
+    {
+        "id": 1, 
+        "titleName": "giang vien"
+    },
+    {
+        "id": 2, 
+        "titleName": "nghien cuu sinh"
+    },
+    {
+        "id": 3, 
+        "titleName": "truong khoa"
+    },
+    {
+        "id": 4, 
+        "titleName": "pho khoa"
+    }
+]

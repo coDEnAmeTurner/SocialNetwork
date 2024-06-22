@@ -4,7 +4,9 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -14,12 +16,15 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -38,7 +43,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Post.findByUnlocked", query = "SELECT p FROM Post p WHERE p.unlocked = :unlocked")})
 public class Post implements Serializable {
 
+    
+
     private static final long serialVersionUID = 1L;
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
@@ -49,22 +57,40 @@ public class Post implements Serializable {
     private String title;
     @Column(name = "unlocked")
     private Boolean unlocked;
+    @Lob
+    @Size(max = 2147483647)
+    @Column(name = "content")
+    private String content;
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+    
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "post")
     private Invitation invitation;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "postId")
-    private Set<SurveyQuestion> surveyQuestionSet;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "post")
+    @JsonIgnore
     private Set<ActionPost> actionPostSet;
     @JoinColumn(name = "content_type_id", referencedColumnName = "id")
+    @JsonIgnore
     @ManyToOne(optional = false)
     private ContentType contentTypeId;
     @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnore
     @ManyToOne(optional = false)
     private User userId;
-    @OneToMany(mappedBy = "postId")
-    private Set<Comment> commentSet;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "post")
-    private TypicalPost typicalPost;
+    @JsonIgnore
+    private Survey survey;
+    @OneToMany(mappedBy = "postId")
+    @JsonIgnore
+    private Set<Comment> commentSet;
+    @OneToMany(mappedBy = "postId")
+    @JsonIgnore
+    private Set<PostImage> postImageSet;
 
     public Post() {
     }
@@ -97,21 +123,20 @@ public class Post implements Serializable {
         this.unlocked = unlocked;
     }
 
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public Invitation getInvitation() {
         return invitation;
     }
 
     public void setInvitation(Invitation invitation) {
         this.invitation = invitation;
-    }
-
-    @XmlTransient
-    public Set<SurveyQuestion> getSurveyQuestionSet() {
-        return surveyQuestionSet;
-    }
-
-    public void setSurveyQuestionSet(Set<SurveyQuestion> surveyQuestionSet) {
-        this.surveyQuestionSet = surveyQuestionSet;
     }
 
     @XmlTransient
@@ -139,6 +164,14 @@ public class Post implements Serializable {
         this.userId = userId;
     }
 
+    public Survey getSurvey() {
+        return survey;
+    }
+
+    public void setSurvey(Survey survey) {
+        this.survey = survey;
+    }
+
     @XmlTransient
     public Set<Comment> getCommentSet() {
         return commentSet;
@@ -146,14 +179,6 @@ public class Post implements Serializable {
 
     public void setCommentSet(Set<Comment> commentSet) {
         this.commentSet = commentSet;
-    }
-
-    public TypicalPost getTypicalPost() {
-        return typicalPost;
-    }
-
-    public void setTypicalPost(TypicalPost typicalPost) {
-        this.typicalPost = typicalPost;
     }
 
     @Override
@@ -180,5 +205,30 @@ public class Post implements Serializable {
     public String toString() {
         return "com.tlqt.pojo.Post[ id=" + id + " ]";
     }
-    
+
+    @XmlTransient
+    public Set<PostImage> getPostImageSet() {
+        return postImageSet;
+    }
+
+    public void setPostImageSet(Set<PostImage> postImageSet) {
+        this.postImageSet = postImageSet;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
 }

@@ -27,17 +27,22 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Alumnus.findAll", query = "SELECT a FROM Alumnus a"),
-    @NamedQuery(name = "Alumnus.findByTypicalUserId", query = "SELECT a FROM Alumnus a WHERE a.typicalUser = :typicalUser"),
+    @NamedQuery(name = "Alumnus.findByTypicalUserId", query = "SELECT a FROM Alumnus a WHERE a.typicalUserId = :typicalUserId"),
     @NamedQuery(name = "Alumnus.findByStudentId", query = "SELECT a FROM Alumnus a WHERE a.studentId = :studentId")})
 public class Alumnus implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "typical_user_id")
+    private Integer typicalUserId;
+    
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 100)
     @Column(name = "student_id")
     private String studentId;
-    @Id
     @JoinColumn(name = "typical_user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private TypicalUser typicalUser;
@@ -45,9 +50,21 @@ public class Alumnus implements Serializable {
     public Alumnus() {
     }
 
-    public Alumnus(String studentId, TypicalUser typicalUser) {
+    public Alumnus(Integer typicalUserId) {
+        this.typicalUserId = typicalUserId;
+    }
+
+    public Alumnus(Integer typicalUserId, String studentId) {
+        this.typicalUserId = typicalUserId;
         this.studentId = studentId;
-        this.typicalUser = typicalUser;
+    }
+
+    public Integer getTypicalUserId() {
+        return typicalUserId;
+    }
+
+    public void setTypicalUserId(Integer typicalUserId) {
+        this.typicalUserId = typicalUserId;
     }
 
     public String getStudentId() {
@@ -69,7 +86,7 @@ public class Alumnus implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (typicalUser.getUser().getId() != null ? typicalUser.getUser().getId().hashCode() : 0);
+        hash += (typicalUserId != null ? typicalUserId.hashCode() : 0);
         return hash;
     }
 
@@ -80,7 +97,7 @@ public class Alumnus implements Serializable {
             return false;
         }
         Alumnus other = (Alumnus) object;
-        if ((this.typicalUser.getUser().getId() == null && other.typicalUser.getUser().getId() != null) || (this.typicalUser.getUser().getId() != null && !this.typicalUser.getUser().getId().equals(other.typicalUser.getUser().getId()))) {
+        if ((this.typicalUserId == null && other.typicalUserId != null) || (this.typicalUserId != null && !this.typicalUserId.equals(other.typicalUserId))) {
             return false;
         }
         return true;
@@ -88,7 +105,7 @@ public class Alumnus implements Serializable {
 
     @Override
     public String toString() {
-        return "com.tlqt.pojo.Alumnus[ typicalUserId=" + typicalUser.getUser().getId() + " ]";
+        return "com.tlqt.pojo.Alumnus[ typicalUserId=" + typicalUserId + " ]";
     }
     
 }

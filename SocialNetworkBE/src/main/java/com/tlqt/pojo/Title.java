@@ -4,6 +4,7 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -44,6 +45,7 @@ public class Title implements Serializable {
     @Column(name = "title_name")
     private String titleName;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "titleId")
+    @JsonIgnore
     private Set<Lecturer> lecturerSet;
 
     public Title() {

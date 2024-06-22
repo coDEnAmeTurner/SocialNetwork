@@ -17,7 +17,23 @@ public interface UserRepository {
 
     User getUserByUsername(String username);
 
+    User getUserByUsernameAndPassword(String username, String password);
+
     User getUserByEmail(String email);
 
     void addUser(User user);
+
+    boolean authUser(String username, String password);
+
+    List<Object[]> getAlumniAndRelatedInfo();
+
+    List<Object[]> getLecturersAndRelatedInfo();
+    
+    User getAuthorByPostId(int postId);
+    
+    User getUserById(int id);
+    
+    User getUserByCommentId(int commentId);
+    
+    void update(User user);
 }

@@ -13,4 +13,7 @@ import com.tlqt.pojo.Alumnus;
 public interface AlumnusService {
     void addAlumnus(Alumnus tu);
 
+    Alumnus getAlumnusByTypicalUserId(int typicalUserId);
+    
+    void update(Alumnus a);
 }

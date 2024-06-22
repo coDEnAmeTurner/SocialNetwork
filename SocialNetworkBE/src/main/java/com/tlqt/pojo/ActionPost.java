@@ -34,6 +34,7 @@ public class ActionPost implements Serializable {
     protected ActionPostPK actionPostPK;
     @Column(name = "counts")
     private Integer counts;
+    
     @JoinColumn(name = "action_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Action actionId;

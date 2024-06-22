@@ -23,4 +23,9 @@ public class UserRoleServiceImpl implements UserRoleService {
     public UserRole getUserRoleById(int id) {
         return this.userRoleRepo.getUserRoleById(id);
     }
+
+    @Override
+    public UserRole getUserRoleByUserId(int userId) {
+        return this.userRoleRepo.getUserRoleByUserId(userId);
+    }
 }

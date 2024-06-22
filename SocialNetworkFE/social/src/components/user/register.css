@@ -24,6 +24,7 @@
 
 }
 
+.register-title,
 .register-dob,
 .register-file,
 .register-academic-rank,
@@ -43,6 +44,7 @@
   color: rgb(255, 0, 55);
 }
 
+.title-label,
 .dob-label,
 .file-label,
 .avatar-label,
@@ -96,4 +98,5 @@ img {
   width: 300px;
   height: 300px;
   border-radius: 50%;
+  overflow: hidden;
 }

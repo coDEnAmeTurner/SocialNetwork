@@ -12,4 +12,6 @@ import com.tlqt.pojo.UserRole;
  */
 public interface UserRoleRepository {
     UserRole getUserRoleById(int id);
+    
+    UserRole getUserRoleByUserId(int userId);
 }

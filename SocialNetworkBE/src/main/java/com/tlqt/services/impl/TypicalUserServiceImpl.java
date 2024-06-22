@@ -23,5 +23,15 @@ public class TypicalUserServiceImpl implements TypicalUserService{
     public void addTypicalUser(TypicalUser tu) {
         this.tuRepo.addTypicalUser(tu);
     }
+
+    @Override
+    public TypicalUser getTypicalUserByUserId(int userId) {
+        return tuRepo.getTypicalUserByUserId(userId);
+    }
+
+    @Override
+    public void update(TypicalUser tu) {
+        tuRepo.update(tu);
+    }
     
 }

@@ -14,4 +14,6 @@ public interface UserRoleService {
 
     UserRole getUserRoleById(int id);
     
+    UserRole getUserRoleByUserId(int userId);
+    
 }

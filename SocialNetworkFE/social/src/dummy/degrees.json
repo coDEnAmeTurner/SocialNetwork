@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "degreeName": "bachelor"
+    },
+    {
+        "id": 2,
+        "degreeName": "master"
+    },
+    {
+        "id": 3,
+        "degreeName": "doctorate"
+    }
+]

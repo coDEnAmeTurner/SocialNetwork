@@ -6,13 +6,18 @@ package com.tlqt.configs;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ResourceBundleMessageSource;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.validation.Validator;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.DefaultServletHandlerConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
@@ -28,6 +33,7 @@ import org.springframework.web.servlet.view.JstlView;
     "com.tlqt.controllers",
     "com.tlqt.repositories",
     "com.tlqt.services",
+    "com.tlqt.components"
 }) //chi dinh vi tri xai annotation lien quan ro dau nay
 public class WebAppContextConfig implements WebMvcConfigurer {
 
@@ -35,17 +41,6 @@ public class WebAppContextConfig implements WebMvcConfigurer {
     public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
         configurer.enable();
     } //bat kha nang doc hieu endpoint "/"
-
-    //pt tao dau InternalResourceViewResolver, dung de chi cach tim file jsp
-    @Bean
-    public InternalResourceViewResolver internalResourceViewResolver() {
-        InternalResourceViewResolver r = new InternalResourceViewResolver();
-        r.setViewClass(JstlView.class); //config engine tim file
-        r.setPrefix("/WEB-INF/pages/");//config vi tri thu muc
-        r.setSuffix(".jsp"); //config hau to cua file
-
-        return r;
-    }
     
     @Bean
     public CommonsMultipartResolver multipartResolver() {
@@ -55,5 +50,5 @@ public class WebAppContextConfig implements WebMvcConfigurer {
         return resolver;
     }
     
-    
+   
 }

@@ -27,20 +27,25 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Lecturer.findAll", query = "SELECT l FROM Lecturer l"),
-    @NamedQuery(name = "Lecturer.findByTypicalUserId", query = "SELECT l FROM Lecturer l WHERE l.typicalUser = :typicalUser"),
+    @NamedQuery(name = "Lecturer.findByTypicalUserId", query = "SELECT l FROM Lecturer l WHERE l.typicalUserId = :typicalUserId"),
     @NamedQuery(name = "Lecturer.findByLocked", query = "SELECT l FROM Lecturer l WHERE l.locked = :locked")})
 public class Lecturer implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "typical_user_id")
+    private Integer typicalUserId;
     @Column(name = "locked")
     private Boolean locked;
+    
     @JoinColumn(name = "dispatching_admin_id", referencedColumnName = "user_id")
     @ManyToOne
-    private Admin dispatchingAdmin;
+    private Admin dispatchingAdminId;
     @JoinColumn(name = "title_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Title titleId;
-    @Id
     @JoinColumn(name = "typical_user_id", referencedColumnName = "user_id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private TypicalUser typicalUser;
@@ -48,16 +53,16 @@ public class Lecturer implements Serializable {
     public Lecturer() {
     }
 
-    public Lecturer(TypicalUser typicalUser) {
-        this.typicalUser = typicalUser;
+    public Lecturer(Integer typicalUserId) {
+        this.typicalUserId = typicalUserId;
     }
 
-    public Admin getDispatchingAdmin() {
-        return dispatchingAdmin;
+    public Integer getTypicalUserId() {
+        return typicalUserId;
     }
 
-    public void setDispatchingAdmin(Admin dispatchingAdmin) {
-        this.dispatchingAdmin = dispatchingAdmin;
+    public void setTypicalUserId(Integer typicalUserId) {
+        this.typicalUserId = typicalUserId;
     }
 
     public Boolean getLocked() {
@@ -66,6 +71,14 @@ public class Lecturer implements Serializable {
 
     public void setLocked(Boolean locked) {
         this.locked = locked;
+    }
+
+    public Admin getDispatchingAdminId() {
+        return dispatchingAdminId;
+    }
+
+    public void setDispatchingAdminId(Admin dispatchingAdminId) {
+        this.dispatchingAdminId = dispatchingAdminId;
     }
 
     public Title getTitleId() {
@@ -87,7 +100,7 @@ public class Lecturer implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (this.typicalUser.getUser().getId() != null ? this.typicalUser.getUser().getId().hashCode() : 0);
+        hash += (typicalUserId != null ? typicalUserId.hashCode() : 0);
         return hash;
     }
 
@@ -98,7 +111,7 @@ public class Lecturer implements Serializable {
             return false;
         }
         Lecturer other = (Lecturer) object;
-        if ((this.typicalUser.getUser().getId() == null && other.typicalUser.getUser().getId() != null) || (this.typicalUser.getUser().getId() != null && !this.typicalUser.getUser().getId().equals(other.typicalUser.getUser().getId()))) {
+        if ((this.typicalUserId == null && other.typicalUserId != null) || (this.typicalUserId != null && !this.typicalUserId.equals(other.typicalUserId))) {
             return false;
         }
         return true;
@@ -106,7 +119,7 @@ public class Lecturer implements Serializable {
 
     @Override
     public String toString() {
-        return "com.tlqt.pojo.Lecturer[ typicalUserId=" + typicalUser.getUser().getId() + " ]";
+        return "com.tlqt.pojo.Lecturer[ typicalUserId=" + typicalUserId + " ]";
     }
     
 }

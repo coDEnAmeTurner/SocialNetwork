@@ -14,4 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
  */
 public interface TypicalUserRepository {
     void addTypicalUser(TypicalUser tu);
+    
+    TypicalUser getTypicalUserByUserId(int userId);
+    
+    void update(TypicalUser tu);
 }

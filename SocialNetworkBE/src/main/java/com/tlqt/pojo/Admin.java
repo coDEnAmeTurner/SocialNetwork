@@ -6,14 +6,20 @@ package com.tlqt.pojo;
 
 import java.io.Serializable;
 import java.util.Set;
+import javax.persistence.Basic;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
@@ -26,18 +32,34 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Admin.findAll", query = "SELECT a FROM Admin a"),
-    @NamedQuery(name = "Admin.findByUserId", query = "SELECT a FROM Admin a WHERE a.user = :user")})
+    @NamedQuery(name = "Admin.findByUserId", query = "SELECT a FROM Admin a WHERE a.userId = :userId")})
 public class Admin implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "user_id")
+    private Integer userId;
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @OneToOne(optional = false)
     private User user;
-    @OneToMany(mappedBy = "dispatchingAdmin")
+    @OneToMany(mappedBy = "dispatchingAdminId")
     private Set<Lecturer> lecturerSet;
 
-
     public Admin() {
+    }
+
+    public Admin(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
     }
 
     public User getUser() {
@@ -60,7 +82,7 @@ public class Admin implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (user.getId() != null ? user.getId().hashCode() : 0);
+        hash += (userId != null ? userId.hashCode() : 0);
         return hash;
     }
 
@@ -71,7 +93,7 @@ public class Admin implements Serializable {
             return false;
         }
         Admin other = (Admin) object;
-        if ((this.user.getId() == null && other.user.getId() != null) || (this.user.getId() != null && !this.user.getId().equals(other.user.getId()))) {
+        if ((this.userId == null && other.userId != null) || (this.userId != null && !this.userId.equals(other.userId))) {
             return false;
         }
         return true;
@@ -79,8 +101,7 @@ public class Admin implements Serializable {
 
     @Override
     public String toString() {
-        return "com.tlqt.pojo.Admin[ userId=" + user.getId() + " ]";
+        return "com.tlqt.pojo.Admin[ userId=" + userId + " ]";
     }
-
     
 }

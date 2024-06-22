@@ -20,7 +20,8 @@
     <class>com.tlqt.pojo.ContentType</class>
     <class>com.tlqt.pojo.Post</class>
     <class>com.tlqt.pojo.Comment</class>
-    <class>com.tlqt.pojo.ActionComment</class>
+    <class>com.tlqt.pojo.Survey</class>
+    <class>com.tlqt.pojo.PostImage</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/socialdb?zeroDateTimeBehavior=CONVERT_TO_NULL"/>

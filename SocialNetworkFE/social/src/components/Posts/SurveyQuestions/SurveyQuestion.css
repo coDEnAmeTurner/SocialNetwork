@@ -1,0 +1,11 @@
+.question-content {
+    height: 50px;
+    background-color: #535353;
+    color: white;
+    border: none;
+    font-size: 1.15rem;
+    font-family: "Noto Sans", sans-serif;
+    padding: 0.25rem 0.5rem 4rem 0.5rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
