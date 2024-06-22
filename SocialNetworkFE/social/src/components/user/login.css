@@ -7,6 +7,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-top: 3rem;
   min-height: 60vh;
   min-width: 100%;
 }
@@ -16,7 +17,7 @@
   padding: 1.25rem;
   background-color: #631dbc;
   background-image: linear-gradient(225deg,
-      #631dbc 0%,
+      #F58023 0%,
       #1e0144 100%);
   font-weight: 700;
 }
@@ -34,7 +35,8 @@
 control,
 option,
 select,
-input {
+input:not([type="checkbox"]):not([type="radio"])
+{
   border: none;
   font-size: 0.85rem;
   padding: 0.65rem;
@@ -53,7 +55,7 @@ button {
   padding: 0.75rem;
   border-radius: 4px;
   color: white;
-  background-color: #631dbc;
+  background-color: #da6b10;
 }
 
 .login-register {
@@ -73,4 +75,10 @@ button {
   margin-top: 1rem;
   font-size: 1rem;
   color: rgb(255, 77, 77);
+}
+
+.register-success {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: rgb(24, 255, 16);
 }

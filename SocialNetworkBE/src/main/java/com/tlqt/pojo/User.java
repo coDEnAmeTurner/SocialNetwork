@@ -4,6 +4,9 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.File;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -45,13 +48,22 @@ import org.springframework.web.multipart.MultipartFile;
     @NamedQuery(name = "User.findById", query = "SELECT u FROM User u WHERE u.id = :id"),
     @NamedQuery(name = "User.findByFullName", query = "SELECT u FROM User u WHERE u.fullName = :fullName"),
     @NamedQuery(name = "User.findByUsername", query = "SELECT u FROM User u WHERE u.username = :username"),
+    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByDob", query = "SELECT u FROM User u WHERE u.dob = :dob"),
-    @NamedQuery(name = "User.findByPhone", query = "SELECT u FROM User u WHERE u.phone = :phone"),
-    @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email")
-
-})
+    @NamedQuery(name = "User.findByPhone", query = "SELECT u FROM User u WHERE u.phone = :phone")})
 public class User implements Serializable {
 
+    @Lob
+    @Size(max = 2147483647)
+    @Column(name = "background")
+    private String background;
+
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -78,6 +90,7 @@ public class User implements Serializable {
     private String password;
     @Column(name = "dob")
     @Temporal(TemporalType.DATE)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", locale = "vi-VN", timezone = "Asia/Bangkok")
     private Date dob;
     // @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Basic(optional = false)
@@ -90,28 +103,30 @@ public class User implements Serializable {
     @Size(max = 10)
     @Column(name = "phone")
     private String phone;
-    @JoinTable(name = "user_invitation", joinColumns = {
-        @JoinColumn(name = "user_id", referencedColumnName = "id")}, inverseJoinColumns = {
-        @JoinColumn(name = "invitation_id", referencedColumnName = "post_id")})
-    @ManyToMany
-    private Set<Invitation> invitationSet;
-    @JoinColumn(name = "user_role_id", referencedColumnName = "id")
-    @ManyToOne(optional = false)
-    private UserRole userRole;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "userId")
-    private ActionComment actionComment;
+    
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private TypicalUser typicalUser;
+    @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private Admin admin;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<ActionPost> actionPostSet;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Post> postSet;
+    @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userId")
     private Set<Comment> commentSet;
+    @JsonIgnore
+    @JoinColumn(name = "user_role_id", referencedColumnName = "id")
+    @ManyToOne(optional = false)
+    private UserRole userRoleId;
     @Transient
     private MultipartFile file;
+    @Transient
+    private MultipartFile file1;
 
     public User() {
     }
@@ -191,37 +206,12 @@ public class User implements Serializable {
         this.phone = phone;
     }
 
-    @XmlTransient
-    public Set<Invitation> getInvitationSet() {
-        return invitationSet;
-    }
-
-    public void setInvitationSet(Set<Invitation> invitationSet) {
-        this.invitationSet = invitationSet;
-    }
-
-    public ActionComment getActionComment() {
-        return actionComment;
-    }
-
-    public void setActionComment(ActionComment actionComment) {
-        this.actionComment = actionComment;
-    }
-
     public TypicalUser getTypicalUser() {
         return typicalUser;
     }
 
     public void setTypicalUser(TypicalUser typicalUser) {
         this.typicalUser = typicalUser;
-    }
-
-    public Admin getAdmin() {
-        return admin;
-    }
-
-    public void setAdmin(Admin admin) {
-        this.admin = admin;
     }
 
     @XmlTransient
@@ -251,12 +241,12 @@ public class User implements Serializable {
         this.commentSet = commentSet;
     }
 
-    public UserRole getUserRole() {
-        return userRole;
+    public UserRole getUserRoleId() {
+        return userRoleId;
     }
 
-    public void setUserRole(UserRole userRole) {
-        this.userRole = userRole;
+    public void setUserRoleId(UserRole userRoleId) {
+        this.userRoleId = userRoleId;
     }
 
     @Override
@@ -284,12 +274,73 @@ public class User implements Serializable {
         return "com.tlqt.pojo.User[ id=" + id + " ]";
     }
 
+    /**
+     * @return the file
+     */
     public MultipartFile getFile() {
         return file;
     }
 
+    /**
+     * @param file the file to set
+     */
     public void setFile(MultipartFile file) {
         this.file = file;
     }
 
+    /**
+     * @return the admin
+     */
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    /**
+     * @param admin the admin to set
+     */
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public String getBackground() {
+        return background;
+    }
+
+    public void setBackground(String background) {
+        this.background = background;
+    }
+
+    /**
+     * @return the file1
+     */
+    public MultipartFile getFile1() {
+        return file1;
+    }
+
+    /**
+     * @param file1 the file1 to set
+     */
+    public void setFile1(MultipartFile file1) {
+        this.file1 = file1;
+    }
+
+    /**
+     * @return the file
+     */
 }

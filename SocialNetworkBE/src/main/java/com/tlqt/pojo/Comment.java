@@ -4,7 +4,9 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -21,6 +23,8 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
@@ -37,6 +41,13 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Comment.findById", query = "SELECT c FROM Comment c WHERE c.id = :id")})
 public class Comment implements Serializable {
 
+    @Column(name = "created_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date createdAt;
+    @Column(name = "updated_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date updatedAt;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,16 +58,12 @@ public class Comment implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "content")
     private String content;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "commentId")
-    private ActionComment actionComment;
-    @OneToMany(mappedBy = "parentCommentId")
-    private Set<Comment> commentSet;
-    @JoinColumn(name = "parent_comment_id", referencedColumnName = "id")
-    @ManyToOne
-    private Comment parentCommentId;
+
+    @JsonIgnore
     @JoinColumn(name = "post_id", referencedColumnName = "id")
     @ManyToOne
     private Post postId;
+    @JsonIgnore
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private User userId;
@@ -84,30 +91,6 @@ public class Comment implements Serializable {
         this.content = content;
     }
 
-    public ActionComment getActionComment() {
-        return actionComment;
-    }
-
-    public void setActionComment(ActionComment actionComment) {
-        this.actionComment = actionComment;
-    }
-
-    @XmlTransient
-    public Set<Comment> getCommentSet() {
-        return commentSet;
-    }
-
-    public void setCommentSet(Set<Comment> commentSet) {
-        this.commentSet = commentSet;
-    }
-
-    public Comment getParentCommentId() {
-        return parentCommentId;
-    }
-
-    public void setParentCommentId(Comment parentCommentId) {
-        this.parentCommentId = parentCommentId;
-    }
 
     public Post getPostId() {
         return postId;
@@ -149,5 +132,21 @@ public class Comment implements Serializable {
     public String toString() {
         return "com.tlqt.pojo.Comment[ id=" + id + " ]";
     }
-    
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Date getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Date updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
 }

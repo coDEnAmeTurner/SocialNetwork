@@ -6,16 +6,21 @@ package com.tlqt.configs;
 
 import com.cloudinary.Cloudinary;
 import com.cloudinary.utils.ObjectUtils;
+import com.tlqt.filters.CustomAccessDeniedHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
@@ -30,6 +35,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
     "com.tlqt.repositories",
     "com.tlqt.services"
 })
+@Order(2)
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -38,6 +44,11 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandler() {
+        return new CustomAccessDeniedHandler();
     }
 
     @Bean
@@ -69,10 +80,19 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.formLogin().defaultSuccessUrl("/")
                 .failureUrl("/login?error");
-
         http.logout().logoutSuccessUrl("/login");
+
         http.exceptionHandling()
                 .accessDeniedPage("/login?accessDenied");
+
+        http.authorizeRequests()
+                .antMatchers("/login*").permitAll()
+                .antMatchers("/logout").permitAll()
+                .antMatchers("/**").hasAuthority("admin")
+                .anyRequest().authenticated();
+
+        http.exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler()));
+
         http.csrf().disable();
     }
 }

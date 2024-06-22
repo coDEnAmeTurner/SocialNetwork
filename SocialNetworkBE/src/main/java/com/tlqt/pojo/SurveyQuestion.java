@@ -4,6 +4,7 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -46,10 +47,13 @@ public class SurveyQuestion implements Serializable {
     @Size(max = 2147483647)
     @Column(name = "content")
     private String content;
-    @JoinColumn(name = "post_id", referencedColumnName = "id")
+    
+    @JsonIgnore
+    @JoinColumn(name = "survey_id", referencedColumnName = "post_id")
     @ManyToOne(optional = false)
-    private Post postId;
+    private Survey surveyId;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyQuestionId")
+    @JsonIgnore
     private Set<Choice> choiceSet;
 
     public SurveyQuestion() {
@@ -75,12 +79,12 @@ public class SurveyQuestion implements Serializable {
         this.content = content;
     }
 
-    public Post getPostId() {
-        return postId;
+    public Survey getSurveyId() {
+        return surveyId;
     }
 
-    public void setPostId(Post postId) {
-        this.postId = postId;
+    public void setSurveyId(Survey surveyId) {
+        this.surveyId = surveyId;
     }
 
     @XmlTransient

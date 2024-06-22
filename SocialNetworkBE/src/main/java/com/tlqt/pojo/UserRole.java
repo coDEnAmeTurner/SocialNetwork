@@ -4,6 +4,7 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Set;
 import javax.persistence.Basic;
@@ -43,7 +44,8 @@ public class UserRole implements Serializable {
     @Size(max = 50)
     @Column(name = "role_name")
     private String roleName;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userRole")
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userRoleId")
     private Set<User> userSet;
 
     public UserRole() {

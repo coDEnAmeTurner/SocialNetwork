@@ -23,5 +23,15 @@ public class AlumnusServiceImpl implements AlumnusService{
     public void addAlumnus(Alumnus alumnus) {
         this.alumnusRepo.addAlumnus(alumnus);
     }
+
+    @Override
+    public Alumnus getAlumnusByTypicalUserId(int typicalUserId) {
+        return this.alumnusRepo.getAlumnusByTypicalUserId(typicalUserId);
+    }
+
+    @Override
+    public void update(Alumnus a) {
+        alumnusRepo.update(a);
+    }
     
 }

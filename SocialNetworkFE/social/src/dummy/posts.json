@@ -1,0 +1,264 @@
+[
+    {
+        "id": 0,
+        "title": "First Post Ever!!!",
+        "contentTypeId": 1,
+        "locked": false,
+        "content": "jump in the comment section and type your best greetings to me.",
+        "images": [],
+        "userId": 2,
+        "createdAt": "Tuesday, June 11, 2024 10:15",
+        "updatedAt": "Tuesday, June 11, 2024 10:15",
+        "comments": [
+            {
+                "id": 1,
+                "content": "hello",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 1,
+                    "username": "luudanh",
+                    "password": "123",
+                    "fullName": "Trần Lưu Danh",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1717924421/Screenshot_2024-06-07_220807_jtcefw.png"
+                }
+            },
+            {
+                "id": 2,
+                "content": "hi",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 2,
+                    "username": "quoctuan",
+                    "password": "123",
+                    "fullName": "Quốc Tuấn",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1717924509/z4799064901731_a0d0d19b09efb2c38d7f42d9a16836e4_oogp23.jpg"
+                }
+            },
+            {
+                "id": 3,
+                "content": "greetings, brother!",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 3,
+                    "username": "trantuan",
+                    "password": "123",
+                    "fullName": "Trần Tuấn",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1716902760/rloybymx8z4wbou35scw.jpg"
+                }
+            }
+        ]
+    },
+    {
+        "id": 1,
+        "title": "Russia forever!!!",
+        "contentTypeId": 1,
+        "locked": false,
+        "createdAt": "Tuesday, June 11, 2024 10:15",
+        "updatedAt": "Tuesday, June 11, 2024 10:15",
+        "content": "The Red Army march will reach every corner of the world and any living being will know The Great Russia's power.",
+        "images": [
+            "https://www.historyhit.com/app/uploads/2022/01/Moscow-Victory-Parade-1945-750px.jpg?x67928",
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJ5uPCQ6MeBhqjV_N-l81s0T_RWKqTdrLH1A&s"
+        ],
+        "userId": 1,
+        "comments": [
+            {
+                "id": 4,
+                "content": "hura!",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 4,
+                    "username": "kimduc",
+                    "password": "123",
+                    "fullName": "Lưu Thị Kim Đức",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1716742603/dttqgtxo3oa0p70oqtnf.jpg"
+                }
+            },
+            {
+                "id": 5,
+                "content": "Evil will perish and justice will prevail!",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 1,
+                    "username": "luudanh",
+                    "password": "123",
+                    "fullName": "Trần Lưu Danh",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1717924421/Screenshot_2024-06-07_220807_jtcefw.png"
+                }
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "title": "Vietnam is the loveliest country on the globe",
+        "contentTypeId": 1,
+        "locked": true,
+        "createdAt": "Tuesday, June 11, 2024 10:15",
+        "updatedAt": "Tuesday, June 11, 2024 10:15",
+        "content": "My words are certain and final. Vietnamese people are descendants of dragon, and in a near future, the young dragons will conquer this world!",
+        "images": [
+            "https://cdn.britannica.com/94/159894-050-3B847079/Red-River-Hanoi-Vietnam.jpg",
+            "https://vietnam.travel/sites/default/files/styles/top_banner/public/2022-08/VNAT%20Cover%203.png?itok=atu5sEjq"
+        ],
+        "userId": 1,
+        "comments": [
+            {
+                "id": 6,
+                "content": "It surely is!",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 2,
+                    "username": "quoctuan",
+                    "password": "123",
+                    "fullName": "Quốc Tuấn",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1717924509/z4799064901731_a0d0d19b09efb2c38d7f42d9a16836e4_oogp23.jpg"
+                }
+            },
+            {
+                "id": 7,
+                "content": "My home country!",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 3,
+                    "username": "trantuan",
+                    "password": "123",
+                    "fullName": "Trần Tuấn",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1716902760/rloybymx8z4wbou35scw.jpg"
+                }
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "title": "Invitation to uni prom",
+        "contentTypeId": 2,
+        "locked": false,
+        "createdAt": "Tuesday, June 11, 2024 10:15",
+        "updatedAt": "Tuesday, June 11, 2024 10:15",
+        "content": "Every lecturer, student, officer is welcome in the prom.",
+        "images": [
+            "https://riversidepalace.vn/multidata/prom-192.jpg",
+            "https://www.vancopayments.com/hubfs/Couples%20Posing%20Outside%20a%20Prom%20After%20Party.jpg",
+            "https://s.hdnux.com/photos/01/25/34/64/22400304/4/1200x0.jpg"
+        ],
+        "invitation": {
+            "location": "Mai Thị Lựu campus",
+            "dateTime": "2024-June-8th 9:00PM"
+        },
+        "userId": 2,
+        "comments": [
+            {
+                "id": 8,
+                "content": "will there be girls?",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 4,
+                    "username": "kimduc",
+                    "password": "123",
+                    "fullName": "Lưu Thị Kim Đức",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1716742603/dttqgtxo3oa0p70oqtnf.jpg"
+                }
+            },
+            {
+                "id": 9,
+                "content": "there will be tons of food and dance",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 1,
+                    "username": "luudanh",
+                    "password": "123",
+                    "fullName": "Trần Lưu Danh",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1717924421/Screenshot_2024-06-07_220807_jtcefw.png"
+                }
+            }
+        ]
+    },
+    {
+        "id": 4,
+        "title": "Survey on alumni' recruitment",
+        "contentTypeId": 3,
+        "locked": true,
+        "createdAt": "Tuesday, June 11, 2024 10:15",
+        "updatedAt": "Tuesday, June 11, 2024 10:15",
+        "content": "A questionaire on alumni employment status post-graduation",
+        "userId": 3,
+        "images": [],
+        "survey": {
+            "questions": [
+                {
+                    "id": 0,
+                    "content": "How many companies have you applied?",
+                    "choices": [
+                        {
+                            "id": 0,
+                            "content": "Only 1.",
+                            "voteCount": 2
+                        },
+                        {
+                            "id": 1,
+                            "content": "1 to 5",
+                            "voteCount": 7
+                        },
+                        {
+                            "id": 2,
+                            "content": "5 to 10",
+                            "voteCount": 3
+                        },
+                        {
+                            "id": 3,
+                            "content": "More than 10",
+                            "voteCount": 2
+                        }
+                    ],
+                    "vote": null
+                },
+                {
+                    "id": 1,
+                    "content": "How many employment tests have you done?",
+                    "choices": [
+                        {
+                            "id": 4,
+                            "content": "Below 5.",
+                            "voteCount": 2
+                        },
+                        {
+                            "id": 5,
+                            "content": "5 to 7",
+                            "voteCount": 7
+                        },
+                        {
+                            "id": 6,
+                            "content": "More than 7",
+                            "voteCount": 3
+                        }
+                    ],
+                    "vote": null
+                }
+            ]
+        },
+        "comments": [
+            {
+                "id": 10,
+                "content": "This survey seems kinda sus",
+                "createdAt": "Tuesday, June 11, 2024 10:15",
+                "updatedAt": "Tuesday, June 11, 2024 10:15",
+                "owner": {
+                    "id": 2,
+                    "username": "quoctuan",
+                    "password": "123",
+                    "fullName": "Quốc Tuấn",
+                    "avatar": "https://res.cloudinary.com/dymtveeni/image/upload/v1717924509/z4799064901731_a0d0d19b09efb2c38d7f42d9a16836e4_oogp23.jpg"
+                }
+            }
+        ]
+    }
+]

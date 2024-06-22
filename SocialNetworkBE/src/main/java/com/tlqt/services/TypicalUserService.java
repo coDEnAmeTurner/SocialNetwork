@@ -12,4 +12,8 @@ import com.tlqt.pojo.TypicalUser;
  */
 public interface TypicalUserService {
     void addTypicalUser(TypicalUser tu);
+    
+    TypicalUser getTypicalUserByUserId(int userId);
+    
+    void update(TypicalUser tu);
 }

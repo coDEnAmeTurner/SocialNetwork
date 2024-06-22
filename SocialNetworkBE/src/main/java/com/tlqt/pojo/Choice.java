@@ -4,6 +4,7 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -44,8 +45,10 @@ public class Choice implements Serializable {
     private String content;
     @Column(name = "voteCount")
     private Integer voteCount;
+    
     @JoinColumn(name = "survey_question_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
+    @JsonIgnore
     private SurveyQuestion surveyQuestionId;
 
     public Choice() {

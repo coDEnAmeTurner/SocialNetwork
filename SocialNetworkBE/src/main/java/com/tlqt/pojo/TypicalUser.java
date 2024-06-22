@@ -5,7 +5,9 @@
 package com.tlqt.pojo;
 
 import java.io.Serializable;
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
@@ -14,6 +16,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
 /**
@@ -25,13 +28,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "TypicalUser.findAll", query = "SELECT t FROM TypicalUser t"),
-    @NamedQuery(name = "TypicalUser.findByUserId", query = "SELECT t FROM TypicalUser t WHERE t.user = :user")})
+    @NamedQuery(name = "TypicalUser.findByUserId", query = "SELECT t FROM TypicalUser t WHERE t.userId = :userId")})
 public class TypicalUser implements Serializable {
+
     private static final long serialVersionUID = 1L;
     @Id
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @OneToOne(optional = false)
-    private User user;
+    @Basic(optional = false)
+    @NotNull
+    @Column(name = "user_id")
+    private Integer userId;
+    
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "typicalUser")
     private Alumnus alumnus;
     @JoinColumn(name = "academic_rank_id", referencedColumnName = "id")
@@ -40,10 +46,29 @@ public class TypicalUser implements Serializable {
     @JoinColumn(name = "degree_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Degree degreeId;
+    @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @OneToOne(optional = false)
+    private User user;
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "typicalUser")
     private Lecturer lecturer;
 
     public TypicalUser() {
+    }
+
+    public TypicalUser(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Integer getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Integer userId) {
+        this.userId = userId;
+    }
+
+    public Alumnus getAlumnus() {
+        return alumnus;
     }
 
     public void setAlumnus(Alumnus alumnus) {
@@ -85,7 +110,7 @@ public class TypicalUser implements Serializable {
     @Override
     public int hashCode() {
         int hash = 0;
-        hash += (getUser().getId() != null ? getUser().getId().hashCode() : 0);
+        hash += (userId != null ? userId.hashCode() : 0);
         return hash;
     }
 
@@ -96,7 +121,7 @@ public class TypicalUser implements Serializable {
             return false;
         }
         TypicalUser other = (TypicalUser) object;
-        if ((this.getUser().getId() == null && other.getUser().getId() != null) || (this.getUser().getId() != null && !this.user.getId().equals(other.user.getId()))) {
+        if ((this.userId == null && other.userId != null) || (this.userId != null && !this.userId.equals(other.userId))) {
             return false;
         }
         return true;
@@ -104,14 +129,7 @@ public class TypicalUser implements Serializable {
 
     @Override
     public String toString() {
-        return "com.tlqt.pojo.TypicalUser[ userId=" + getUser().getId() + " ]";
-    }
-
-    /**
-     * @return the alumnus
-     */
-    public Alumnus getAlumnus() {
-        return alumnus;
+        return "com.tlqt.pojo.TypicalUser[ userId=" + userId + " ]";
     }
     
 }

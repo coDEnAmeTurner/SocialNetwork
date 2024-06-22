@@ -11,5 +11,10 @@ import com.tlqt.pojo.Alumnus;
  * @author Admin
  */
 public interface AlumnusRepository {
+
     void addAlumnus(Alumnus alumnus);
+
+    Alumnus getAlumnusByTypicalUserId(int typicalUserId);
+
+    void update(Alumnus a);
 }

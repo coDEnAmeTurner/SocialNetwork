@@ -4,32 +4,35 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
  * @author Admin
  */
 @Entity
-@Table(name = "typical_post")
+@Table(name = "survey")
 @XmlRootElement
 @NamedQueries({
-    @NamedQuery(name = "TypicalPost.findAll", query = "SELECT t FROM TypicalPost t"),
-    @NamedQuery(name = "TypicalPost.findByPostId", query = "SELECT t FROM TypicalPost t WHERE t.postId = :postId")})
-public class TypicalPost implements Serializable {
+    @NamedQuery(name = "Survey.findAll", query = "SELECT s FROM Survey s"),
+    @NamedQuery(name = "Survey.findByPostId", query = "SELECT s FROM Survey s WHERE s.postId = :postId")})
+public class Survey implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -37,18 +40,18 @@ public class TypicalPost implements Serializable {
     @NotNull
     @Column(name = "post_id")
     private Integer postId;
-    @Lob
-    @Size(max = 2147483647)
-    @Column(name = "content")
-    private String content;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyId")
+    private Set<SurveyQuestion> surveyQuestionSet;
+    
+    @JsonIgnore
     @JoinColumn(name = "post_id", referencedColumnName = "id", insertable = false, updatable = false)
     @OneToOne(optional = false)
     private Post post;
 
-    public TypicalPost() {
+    public Survey() {
     }
 
-    public TypicalPost(Integer postId) {
+    public Survey(Integer postId) {
         this.postId = postId;
     }
 
@@ -60,12 +63,13 @@ public class TypicalPost implements Serializable {
         this.postId = postId;
     }
 
-    public String getContent() {
-        return content;
+    @XmlTransient
+    public Set<SurveyQuestion> getSurveyQuestionSet() {
+        return surveyQuestionSet;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setSurveyQuestionSet(Set<SurveyQuestion> surveyQuestionSet) {
+        this.surveyQuestionSet = surveyQuestionSet;
     }
 
     public Post getPost() {
@@ -86,10 +90,10 @@ public class TypicalPost implements Serializable {
     @Override
     public boolean equals(Object object) {
         // TODO: Warning - this method won't work in the case the id fields are not set
-        if (!(object instanceof TypicalPost)) {
+        if (!(object instanceof Survey)) {
             return false;
         }
-        TypicalPost other = (TypicalPost) object;
+        Survey other = (Survey) object;
         if ((this.postId == null && other.postId != null) || (this.postId != null && !this.postId.equals(other.postId))) {
             return false;
         }
@@ -98,7 +102,7 @@ public class TypicalPost implements Serializable {
 
     @Override
     public String toString() {
-        return "com.tlqt.pojo.TypicalPost[ postId=" + postId + " ]";
+        return "com.tlqt.pojo.Survey[ postId=" + postId + " ]";
     }
     
 }

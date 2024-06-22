@@ -4,6 +4,7 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Set;
@@ -12,7 +13,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -35,7 +35,6 @@ import javax.xml.bind.annotation.XmlTransient;
 @NamedQueries({
     @NamedQuery(name = "Invitation.findAll", query = "SELECT i FROM Invitation i"),
     @NamedQuery(name = "Invitation.findByPostId", query = "SELECT i FROM Invitation i WHERE i.postId = :postId"),
-    @NamedQuery(name = "Invitation.findByEventTitle", query = "SELECT i FROM Invitation i WHERE i.eventTitle = :eventTitle"),
     @NamedQuery(name = "Invitation.findByLocation", query = "SELECT i FROM Invitation i WHERE i.location = :location"),
     @NamedQuery(name = "Invitation.findByDateTime", query = "SELECT i FROM Invitation i WHERE i.dateTime = :dateTime")})
 public class Invitation implements Serializable {
@@ -46,22 +45,15 @@ public class Invitation implements Serializable {
     @NotNull
     @Column(name = "post_id")
     private Integer postId;
-    @Lob
-    @Size(max = 2147483647)
-    @Column(name = "event_content")
-    private String eventContent;
-    @Size(max = 200)
-    @Column(name = "event_title")
-    private String eventTitle;
     @Size(max = 2050)
     @Column(name = "location")
     private String location;
     @Column(name = "date_time")
     @Temporal(TemporalType.TIMESTAMP)
     private Date dateTime;
-    @ManyToMany(mappedBy = "invitationSet")
-    private Set<User> userSet;
+    
     @JoinColumn(name = "post_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JsonIgnore
     @OneToOne(optional = false)
     private Post post;
 
@@ -80,22 +72,6 @@ public class Invitation implements Serializable {
         this.postId = postId;
     }
 
-    public String getEventContent() {
-        return eventContent;
-    }
-
-    public void setEventContent(String eventContent) {
-        this.eventContent = eventContent;
-    }
-
-    public String getEventTitle() {
-        return eventTitle;
-    }
-
-    public void setEventTitle(String eventTitle) {
-        this.eventTitle = eventTitle;
-    }
-
     public String getLocation() {
         return location;
     }
@@ -112,14 +88,6 @@ public class Invitation implements Serializable {
         this.dateTime = dateTime;
     }
 
-    @XmlTransient
-    public Set<User> getUserSet() {
-        return userSet;
-    }
-
-    public void setUserSet(Set<User> userSet) {
-        this.userSet = userSet;
-    }
 
     public Post getPost() {
         return post;
@@ -153,5 +121,5 @@ public class Invitation implements Serializable {
     public String toString() {
         return "com.tlqt.pojo.Invitation[ postId=" + postId + " ]";
     }
-    
+
 }

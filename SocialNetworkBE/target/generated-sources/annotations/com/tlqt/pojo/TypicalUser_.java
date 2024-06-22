@@ -9,14 +9,15 @@ import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.7.10.v20211216-rNA", date="2024-05-27T22:33:00")
+@Generated(value="EclipseLink-2.7.10.v20211216-rNA", date="2024-06-23T01:53:53")
 @StaticMetamodel(TypicalUser.class)
 public class TypicalUser_ { 
 
     public static volatile SingularAttribute<TypicalUser, Alumnus> alumnus;
     public static volatile SingularAttribute<TypicalUser, Degree> degreeId;
     public static volatile SingularAttribute<TypicalUser, Lecturer> lecturer;
-    public static volatile SingularAttribute<TypicalUser, User> user;
+    public static volatile SingularAttribute<TypicalUser, Integer> userId;
     public static volatile SingularAttribute<TypicalUser, AcademicRank> academicRankId;
+    public static volatile SingularAttribute<TypicalUser, User> user;
 
 }
