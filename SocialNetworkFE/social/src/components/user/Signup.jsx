@@ -248,7 +248,10 @@ const Register = (props) => {
     <section className="register-container">
       {!isEdit ? (
         <>
-          <div className="register-title"> Sign Up </div>
+          <div className="register-title" style={{
+            fontSize: "1.8rem",
+            backgroundImage: "linear-gradient(225deg, #F58023 0%, #1e0144 100%)"
+          }}> Sign Up </div>
         </>
       ) : (
         <header
@@ -318,7 +321,8 @@ const Register = (props) => {
               style={{
                 display: "inline",
               }}
-              disabled={user.userRole.id === 1 ? true : false}
+              required={!isEdit?true:false}
+              disabled={isEdit && user.userRole.id === 1 ? true : false}
             />
           </Form.Group>
           {isEdit ? (
@@ -340,7 +344,7 @@ const Register = (props) => {
                 style={{
                   display: "inline",
                 }}
-                disabled={user.userRole.id === 1 ? true : false}
+                disabled={isEdit && user.userRole.id === 1 ? true : false}
               />
             </Form.Group>
           ) : (
@@ -356,9 +360,9 @@ const Register = (props) => {
             value={formik.values.fullname}
             className="register-fullname"
             style={{
-              color: user.userRole.id === 1 ? "white" : "black",
+              color: isEdit && user.userRole.id === 1 ? "white" : "black",
             }}
-            disabled={user.userRole.id === 1 ? true : false}
+            disabled={isEdit && user.userRole.id === 1 ? true : false}
           />
           {formik.errors.fullName && (
             <p className="errorMsg">{formik.errors.fullname}</p>
@@ -373,9 +377,9 @@ const Register = (props) => {
             value={formik.values.username}
             className="register-username"
             style={{
-              color: user.userRole.id === 1 ? "white" : "black",
+              color: isEdit && user.userRole.id === 1 ? "white" : "black",
             }}
-            disabled={user.userRole.id === 1 ? true : false}
+            disabled={isEdit && user.userRole.id === 1 ? true : false}
           />
           {formik.errors.username && (
             <p className="errorMsg">{formik.errors.username}</p>
@@ -389,7 +393,7 @@ const Register = (props) => {
               style={{
                 marginBottom: "1.5rem",
               }}
-              disabled={user.userRole.id === 1 ? true : false}
+              disabled={isEdit && user.userRole.id === 1 ? true : false}
             >
               Change Password?
             </button>
@@ -469,9 +473,9 @@ const Register = (props) => {
             onChange={formik.handleChange}
             value={formik.values.email}
             style={{
-              color: user.userRole.id === 1 ? "white" : "black",
+              color: isEdit && user.userRole.id === 1 ? "white" : "black",
             }}
-            disabled={user.userRole.id === 1 ? true : false}
+            disabled={isEdit && user.userRole.id === 1 ? true : false}
           />
           {formik.errors.email && (
             <p className="errorMsg">{formik.errors.email}</p>
@@ -487,9 +491,9 @@ const Register = (props) => {
             onChange={formik.handleChange}
             value={formik.values.phone}
             style={{
-              color: user.userRole.id === 1 ? "white" : "black",
+              color: isEdit && user.userRole.id === 1 ? "white" : "black",
             }}
-            disabled={user.userRole.id === 1 ? true : false}
+            disabled={isEdit && user.userRole.id === 1 ? true : false}
           />
           {formik.errors.phone && (
             <p className="errorMsg">{formik.errors.phone}</p>
@@ -504,10 +508,11 @@ const Register = (props) => {
                 formik.handleChange(event);
               }}
               value={formik.values.dob}
-              disabled={user.userRole.id === 1 ? true : false}
+              required={!isEdit?true:false}
+              disabled={isEdit && user.userRole.id === 1 ? true : false}
             />
           </Form.Group>
-          {user?.userRole.id === 2 ? (
+          {(isEdit && user?.userRole.id === 2) || !isEdit ? (
             <>
               <label className="student-id-label"> STUDENT ID: </label>
               <input
@@ -519,7 +524,7 @@ const Register = (props) => {
                 placeholder="Enter student id"
                 onChange={formik.handleChange}
                 value={formik.values.studentId}
-                disabled={user.userRole.id === 1 ? true : false}
+                disabled={isEdit && user.userRole.id === 1 ? true : false}
               />
             </>
           ) : (
@@ -532,7 +537,7 @@ const Register = (props) => {
             name="degreeId"
             onChange={formik.handleChange}
             value={formik.values.degreeId}
-            disabled={user.userRole.id === 1 ? true : false}
+            disabled={isEdit && user.userRole.id === 1 ? true : false}
           >
             {degreeList.length > 0 ? (
               degreeList.map((degree) => {
@@ -561,7 +566,7 @@ const Register = (props) => {
               formik.setFieldValue("academicRankId", event.target.value);
             }}
             value={formik.values.academicRankId}
-            disabled={user.userRole.id === 1 ? true : false}
+            disabled={isEdit && user.userRole.id === 1 ? true : false}
           >
             {academicRankList.length > 0
               ? academicRankList.map((academicRank) => {
@@ -637,9 +642,9 @@ const Register = (props) => {
             <button
               type="submit"
               style={{
-                marginBottom: "1.5rem",
+                marginBottom: "0.1rem",
               }}
-              disabled={user.userRole.id === 1 ? true : false}
+              disabled={isEdit && user.userRole.id === 1 ? true : false}
             >
               {isEdit ? "Save" : "Create account"}
             </button>
@@ -651,7 +656,9 @@ const Register = (props) => {
         ) : (
           <>
             <div className="register-login"> Already have an account? </div>
-            <Link className="register-login-link" to="/login">
+            <Link className="register-login-link" to="/login" style={{
+              marginBottom: "3.8rem"
+            }}>
               Log in
             </Link>
           </>
