@@ -213,7 +213,9 @@ const Posts = React.forwardRef((props, ref) => {
   ) : (
     <EditComContext.Provider value={[editCom, editComDispatch]}>
       <CommentsContext.Provider value={[comments, commentsDispatch]}>
-        <div key={post?.id} ref={ref} className="post-container">
+        <div key={post?.id} ref={ref} className="post-container" style={{
+          backgroundImage: "linear-gradient(0deg, #324E7D 8%, #224173 30%, #0A2A5D 60%)"
+        }}>
           {fullPost?.open ? (
             <div className="close-post" onClick={handleClose}>
               Close
@@ -356,7 +358,9 @@ const Posts = React.forwardRef((props, ref) => {
 
             <div className="post-interactions">
               <div className="post-vote">
-                <div className="upvote">
+                <div className="upvote" style={{
+                  margin: "3px"
+                }}>
                   {isLike ? (
                     <BiLike
                       size={"24px"}
@@ -364,11 +368,13 @@ const Posts = React.forwardRef((props, ref) => {
                       onClick={handleLike}
                     />
                   ) : (
-                    <BiLike size={"24px"} color="" onClick={handleLike} />
+                    <BiLike size={"24px"} color="white" onClick={handleLike} />
                   )}
                 </div>
 
-                <div className="haha">
+                <div className="haha" style={{
+                  margin: "3px"
+                }}>
                   {isHaha ? (
                     <BiLaugh
                       size={"24px"}
@@ -376,10 +382,12 @@ const Posts = React.forwardRef((props, ref) => {
                       onClick={handleHaha}
                     />
                   ) : (
-                    <BiLaugh size={"24px"} color="" onClick={handleHaha} />
+                    <BiLaugh size={"24px"} color="white" onClick={handleHaha} />
                   )}
                 </div>
-                <div className="love">
+                <div className="love" style={{
+                  margin: "3px"
+                }}>
                   {isLove ? (
                     <BiHeart
                       size={"24px"}
@@ -387,7 +395,7 @@ const Posts = React.forwardRef((props, ref) => {
                       onClick={handleLove}
                     />
                   ) : (
-                    <BiHeart size={"24px"} color="" onClick={handleLove} />
+                    <BiHeart size={"24px"} color="white" onClick={handleLove} />
                   )}
                 </div>
               </div>
@@ -395,6 +403,7 @@ const Posts = React.forwardRef((props, ref) => {
                 <BiCommentDetail
                   size={"24px"}
                   onClick={() => handleReadmore(post?.id)}
+                  color="white"
                 />
               </div>
             </div>

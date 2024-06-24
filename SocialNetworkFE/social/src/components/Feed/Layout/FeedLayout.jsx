@@ -41,7 +41,7 @@ const FeedLayout = ({ children, forEdit = false }) => {
                         ? `url(${user.background})`
                         : `linear-gradient(180deg,${user?.theme} 2%,${user?.theme}, 65%,#181818 100%)`,
                       backgroundPosition: "center",
-                      height: "200px"
+                      height: "250px"
                     }}
                   >
                     <FeedHeader />

@@ -6,7 +6,7 @@ import { useContext, useState } from 'react';
 import { QuestionsContext } from '../../../configs/Contexts';
 import { SurveyMode } from '../../../utils/accessMode';
 
-const SurveyChoice = ({ surveyMode, content, id, qId }) => {
+const SurveyChoice = ({ surveyMode, content, id, qId, checked }) => {
     const [questions, questionsDispatch] = useContext(QuestionsContext);
     const [hidden, setHidden] = useState(false);
 
@@ -57,6 +57,7 @@ const SurveyChoice = ({ surveyMode, content, id, qId }) => {
                     name="group"
                     id={`default-radio`}
                     onClick={setChoiceVote}
+                    checked={checked}
                 />
                 <input
                     required

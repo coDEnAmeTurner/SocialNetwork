@@ -42,9 +42,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Post.findByTitle", query = "SELECT p FROM Post p WHERE p.title = :title"),
     @NamedQuery(name = "Post.findByUnlocked", query = "SELECT p FROM Post p WHERE p.unlocked = :unlocked")})
 public class Post implements Serializable {
-
-    
-
     private static final long serialVersionUID = 1L;
     
     @Id

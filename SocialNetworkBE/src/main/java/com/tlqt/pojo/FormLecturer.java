@@ -7,9 +7,9 @@ package com.tlqt.pojo;
 import com.tlqt.validators.CheckDateFormat;
 import com.tlqt.validators.FileNotFound;
 import com.tlqt.validators.InvalidImage;
+import com.tlqt.validators.NotNull;
 import javax.persistence.Basic;
 import javax.persistence.Lob;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,43 +21,38 @@ public class FormLecturer {
 
     private Integer id;
 
+    @NotNull(message = "Fullname can't be empty!!!")
     @Size(max = 100)
     private String fullName;
 
-    @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "username can't be empty!!!")
     @Size(min = 1, max = 50)
     private String username;
 
-    @Basic(optional = false)
-    @NotNull
+    @NotNull(message = "Dob can't be empty!!!")
     @CheckDateFormat(pattern = "yyyy-MM-dd", message = "Invalid date (yyyy-MM-dd)")
     private String dob;
-    
-    @Basic(optional = false)
-    @NotNull
+
+    @NotNull(message = "email can't be empty!!!")
     @Lob
     @Size(min = 1, max = 2147483647)
     private String email;
-    
-    @Size(max = 10)
+
+    @Size(min = 9, max = 11)
+    @NotNull(message = "phone can't be empty!!!")
     private String phone;
 
-    @Basic(optional = false)
-    @NotNull
-    private int academicRankId;
+    private String academicRankId;
 
-    @Basic(optional = false)
-    @NotNull
-    private int degreeId;
+    @NotNull(message = "degreeId can't be empty!!!")
+    private String degreeId;
 
-    @Basic(optional = false)
-    @NotNull
-    private int titleId;
+    @NotNull(message = "titleId can't be empty!!!")
+    private String titleId;
 
     @Basic(optional = false)
     @FileNotFound
-    @InvalidImage(type = {"image/jpeg","image/png","image/jpg","image/webp"}, message = "Only jpeg, png, jpg, webp allowed!!!")
+    @InvalidImage(type = {"image/jpeg", "image/png", "image/jpg", "image/webp"}, message = "Only jpeg, png, jpg, webp allowed!!!")
     private MultipartFile file;
 
     /**
@@ -164,42 +159,42 @@ public class FormLecturer {
     /**
      * @return the academicRankId
      */
-    public int getAcademicRankId() {
+    public String getAcademicRankId() {
         return academicRankId;
     }
 
     /**
      * @param academicRankId the academicRankId to set
      */
-    public void setAcademicRankId(int academicRankId) {
+    public void setAcademicRankId(String academicRankId) {
         this.academicRankId = academicRankId;
     }
 
     /**
      * @return the degreeId
      */
-    public int getDegreeId() {
+    public String getDegreeId() {
         return degreeId;
     }
 
     /**
      * @param degreeId the degreeId to set
      */
-    public void setDegreeId(int degreeId) {
+    public void setDegreeId(String degreeId) {
         this.degreeId = degreeId;
     }
 
     /**
      * @return the titleId
      */
-    public int getTitleId() {
+    public String getTitleId() {
         return titleId;
     }
 
     /**
      * @param titleId the titleId to set
      */
-    public void setTitleId(int titleId) {
+    public void setTitleId(String titleId) {
         this.titleId = titleId;
     }
 }

@@ -20,5 +20,5 @@ public interface PostRepository{
     Post getPostById(int id);
     void deletePostById(int postId);
     List<Post> getPostsByAuthorId(int authorId);
-    int countPostsByUserId(int userId);
+    long countPostsByUserId(int userId);
 }

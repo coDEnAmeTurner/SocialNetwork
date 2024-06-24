@@ -84,6 +84,17 @@ export const getEntirePost = async (rawPostInst, getAllComments) => {
             q.choices = cres.data;
           }
 
+          try {
+            let vRes = await authApi().get(endpoints['get-vote'](q.id))
+  
+            if (vRes.status === 200) {
+              q.vote = vRes.data.id;
+            }
+
+          } catch (ex) {
+            q.vote = "";
+          }
+
           return q;
         })
       );

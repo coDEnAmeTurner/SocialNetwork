@@ -17,24 +17,24 @@
         <div class="alert alert-danger">
             <strong>Danger!</strong> ${createError}
         </div>
-        
-        
+
+
     </c:if>
     <c:if var="error" test="${usernameError != null}">
         <div class="alert alert-danger">
             <strong>Danger!</strong> ${usernameError}
         </div>
-        
-        
+
+
     </c:if>
     <c:if var="error" test="${emailError != null}">
         <div class="alert alert-danger">
             <strong>Danger!</strong> ${emailError}
         </div>
-        
-        
+
+
     </c:if>
-    
+
 
     <div class="form-floating mb-3 mt-3">
         <form:input class="form-control"  id="fullName"  placeholder="Enter full name" path="fullName" />
@@ -78,6 +78,7 @@
             <c:forEach items="${academicRanks}" var="ar">
                 <option value="${ar.id}" >${ar.academicRankName}</option>
             </c:forEach>
+            <option value="" >No Rank</option>
         </form:select>
         <label for="categoryId" class="form-label">Academic Rank: </label>
     </div>

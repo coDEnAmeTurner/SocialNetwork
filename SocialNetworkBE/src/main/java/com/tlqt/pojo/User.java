@@ -53,6 +53,11 @@ import org.springframework.web.multipart.MultipartFile;
     @NamedQuery(name = "User.findByPhone", query = "SELECT u FROM User u WHERE u.phone = :phone")})
 public class User implements Serializable {
 
+    @Size(max = 255)
+    @Column(name = "theme")
+    private String theme;
+    
+
     @Lob
     @Size(max = 2147483647)
     @Column(name = "background")
@@ -123,6 +128,9 @@ public class User implements Serializable {
     @JoinColumn(name = "user_role_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private UserRole userRoleId;
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Set<Vote> voteSet;
     @Transient
     private MultipartFile file;
     @Transient
@@ -338,6 +346,23 @@ public class User implements Serializable {
      */
     public void setFile1(MultipartFile file1) {
         this.file1 = file1;
+    }
+
+    @XmlTransient
+    public Set<Vote> getVoteSet() {
+        return voteSet;
+    }
+
+    public void setVoteSet(Set<Vote> voteSet) {
+        this.voteSet = voteSet;
+    }
+
+    public String getTheme() {
+        return theme;
+    }
+
+    public void setTheme(String theme) {
+        this.theme = theme;
     }
 
     /**

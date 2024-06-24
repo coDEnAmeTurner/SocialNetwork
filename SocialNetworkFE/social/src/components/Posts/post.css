@@ -5,7 +5,7 @@
   margin-bottom: 5rem;
   min-height: 100vh;
   min-width: 57%;
-  background-color: #292929;
+  background-image: linear-gradient(0deg, #324E7D 8%, #224173 13.75%, #0A2A5D 60%);
   padding: 0.75rem 1.25rem 0 1.25rem;
   border-radius: 14px;
   display: flex;

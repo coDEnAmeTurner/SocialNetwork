@@ -13,13 +13,17 @@ const SideBar = () => {
 
   return (
     <>
-      <div className={`${isOpen ? "feed-sidebar-opened" : "feed-sidebar"}`}>
+      <div
+        className={`${isOpen ? "feed-sidebar-opened" : "feed-sidebar"}`}
+      >
         <header
           style={{
             backgroundColor: `${user?.theme}`,
-            backgroundImage: user.background?`url(${user.background})`:`linear-gradient(180deg,${user?.theme} 2%,${user?.theme}, 65%,#181818 100%)`,
+            backgroundImage: user.background
+              ? `url(${user.background})`
+              : `linear-gradient(180deg,${user?.theme} 2%,${user?.theme}, 65%,#181818 100%)`,
             backgroundPosition: "center",
-        }}
+          }}
         >
           <div
             className="sidebar-close"
@@ -40,7 +44,7 @@ const SideBar = () => {
               className="sidebar-img"
               alt="profile pic"
               style={{
-                boxShadow: `0px 0px 6px 1px ${
+                boxShadow: `0px 0px 20px 5px ${
                   user?.theme ? user.theme : "#df811c"
                 }`,
               }}

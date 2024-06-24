@@ -75,6 +75,7 @@ const Register = (props) => {
       });
 
       if (res.status === 201) navigate("/login");
+      
     } catch (ex) {
       setError(ex.response.data);
       setSubmitting(false);
@@ -135,12 +136,13 @@ const Register = (props) => {
       dob: isEdit ? user?.dob : "",
       studentId: isEdit ? user?.studentId : "",
       degreeId: isEdit ? user?.degree?.id : null,
-      academicRankId: isEdit && user?.rank ? user?.rank?.id : null,
+      academicRankId: isEdit && user?.rank ? user.rank.id : "",
       titleId: isEdit && user?.userRole?.id === 3 ? user?.title?.id : null,
+      theme: isEdit?user.theme:null
     },
 
     validationSchema: Yup.object({
-      fullName: !isEdit ? Yup.string().required("Required") : Yup.string(),
+      fullname: !isEdit ? Yup.string().required("Required") : Yup.string(),
       username: !isEdit
         ? Yup.string()
             .max(20, "Maximum 20 characters")
@@ -185,12 +187,12 @@ const Register = (props) => {
           : Yup.string(),
       phone: !isEdit
         ? Yup.string()
-            .max(10, "Maximum 10 characters")
+            .max(11, "Maximum 11 characters")
             .min(9, "Minimum 9 characters")
             .matches(/^\d+$/, "Only numbers allowed.")
             .required("Required")
         : Yup.string()
-            .max(10, "Maximum 10 characters")
+            .max(11, "Maximum 11 characters")
             .min(9, "Minimum 9 characters")
             .matches(/^\d+$/, "Only numbers allowed."),
       studentId: !isEdit ? Yup.string().required("Required") : Yup.string(),
@@ -198,6 +200,7 @@ const Register = (props) => {
 
     onSubmit: (values) => {
       setSubmitting(true);
+
       const newUser = {
         //user obj
         fullName: values.fullname,
@@ -206,12 +209,11 @@ const Register = (props) => {
         email: values.email,
         phone: values.phone,
         dob: values.dob,
+        theme: values.theme,
 
         //typical_user
         degreeId: !values.degreeId ? degreeList[0].id : values.degreeId,
-        academicRankId: !values.academicRankId
-          ? academicRankList[0].id
-          : values.academicRankId,
+        academicRankId: values.academicRankId,
 
         //alumnus
         studentId: values.studentId,
@@ -350,6 +352,25 @@ const Register = (props) => {
           ) : (
             <></>
           )}
+
+          {isEdit ? (
+            <Form.Group controlId="formFile" className="mb-3 avatar-label">
+              <Form.Label>THEME: </Form.Label>
+              <input
+                className="theme-color"
+                type="color"
+                style={{
+                  width: "200px"
+                }}
+                name="theme"
+                onChange={formik.handleChange}
+                value={formik.values.theme}
+              />
+            </Form.Group>
+          ) : (
+            <></>
+          )}
+          
           <label className="fullname-label"> FULLNAME </label>
           <input
             id="fullname"
@@ -364,9 +385,10 @@ const Register = (props) => {
             }}
             disabled={isEdit && user.userRole.id === 1 ? true : false}
           />
-          {formik.errors.fullName && (
+          {formik.errors.fullname && (
             <p className="errorMsg">{formik.errors.fullname}</p>
           )}
+
           <label className="username-label"> USERNAME </label>
           <input
             id="username"
@@ -384,6 +406,7 @@ const Register = (props) => {
           {formik.errors.username && (
             <p className="errorMsg">{formik.errors.username}</p>
           )}
+
           {isEdit && !newPass ? (
             <button
               className="change-password"
@@ -400,6 +423,7 @@ const Register = (props) => {
           ) : (
             <></>
           )}
+
           {isEdit && newPass ? (
             <>
               <label className="password-label">
@@ -462,6 +486,7 @@ const Register = (props) => {
           ) : (
             <></>
           )}
+
           <label className="email-label"> EMAIL </label>
           <input
             required
@@ -480,6 +505,7 @@ const Register = (props) => {
           {formik.errors.email && (
             <p className="errorMsg">{formik.errors.email}</p>
           )}
+
           <label className="phone-label"> PHONE </label>
           <input
             required
@@ -498,6 +524,7 @@ const Register = (props) => {
           {formik.errors.phone && (
             <p className="errorMsg">{formik.errors.phone}</p>
           )}
+
           <Form.Group controlId="formDob" className="mb-3 avatar-label">
             <Form.Label className="dob-label">DATE OF BIRTH: </Form.Label>
             <Form.Control
@@ -512,6 +539,7 @@ const Register = (props) => {
               disabled={isEdit && user.userRole.id === 1 ? true : false}
             />
           </Form.Group>
+
           {(isEdit && user?.userRole.id === 2) || !isEdit ? (
             <>
               <label className="student-id-label"> STUDENT ID: </label>
@@ -530,6 +558,7 @@ const Register = (props) => {
           ) : (
             <></>
           )}
+
           <label className="degree-label"> DEGREE </label>
           <Form.Select
             aria-label="Select your ultimate degree:"
@@ -557,6 +586,7 @@ const Register = (props) => {
               </option>
             )}
           </Form.Select>
+
           <label className="academic-rank-label"> ACADEMIC RANK </label>
           <Form.Select
             aria-label="Select your ultimate academic rank:"
@@ -585,6 +615,7 @@ const Register = (props) => {
               No Rank.
             </option>
           </Form.Select>
+          
           {isEdit && user.userRole.id === 3 ? (
             <>
               <label className="title-label"> TITLE </label>
