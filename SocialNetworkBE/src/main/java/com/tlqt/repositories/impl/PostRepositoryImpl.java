@@ -11,6 +11,7 @@ import java.util.List;
 import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,19 +87,23 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public int countPostsByUserId(int userId) {
+    public long countPostsByUserId(int userId) {
         Session s = factory.getObject().getCurrentSession();
         CriteriaBuilder b = s.getCriteriaBuilder();
         CriteriaQuery q = b.createQuery(Object[].class);
         Root uRoot = q.from(User.class);
         Root pRoot = q.from(Post.class);
-        q.multiselect(b.count(pRoot.get("id")));
+        q.multiselect(b.count(pRoot.get("id")), uRoot.get("id"));
         q.groupBy(uRoot.get("id"));
-        q.where(b.equal( uRoot.get("id"), userId));
+        Predicate p1 = b.equal( uRoot.get("id"), userId);
+        Predicate p2 = b.equal(uRoot.get("id"), pRoot.get("userId"));
+        q.where(b.and(p1, p2));
         Query query = s.createQuery(q);
         List<Object[]> queryTable = query.getResultList();
         
-        return (int) queryTable.get(0)[0];
+        System.out.println("Result: " + queryTable.get(0)[0].getClass().getName());
+        
+        return ((Long) queryTable.get(0)[0]).longValue();
     }
 
 }

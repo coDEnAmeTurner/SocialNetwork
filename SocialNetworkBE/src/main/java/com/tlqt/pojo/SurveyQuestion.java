@@ -37,6 +37,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "SurveyQuestion.findById", query = "SELECT s FROM SurveyQuestion s WHERE s.id = :id")})
 public class SurveyQuestion implements Serializable {
 
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "surveyQuestion")
+    private Set<Vote> voteSet;
+
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -119,6 +123,15 @@ public class SurveyQuestion implements Serializable {
     @Override
     public String toString() {
         return "com.tlqt.pojo.SurveyQuestion[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Set<Vote> getVoteSet() {
+        return voteSet;
+    }
+
+    public void setVoteSet(Set<Vote> voteSet) {
+        this.voteSet = voteSet;
     }
     
 }

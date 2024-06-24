@@ -155,15 +155,9 @@ const UserProfile = (props) => {
                 </div>
               </div>
               <section className="homepage-container">
-                <div className="homepage-post">
-                  <h1
-                    style={{
-                      color: user?.theme,
-                      textAlign: "center",
-                    }}
-                  >
-                    <b>Timeline </b>
-                  </h1>
+                <div className="homepage-post" style={{
+                   backgroundImage: `linear-gradient(90deg, #0B1129ff, #0F1F46ff, ${user.theme} 50%, #0F1F46ff, #0B1129ff)`
+                }}>
                   {posts && posts.length > 0 ? (
                     <>
                       {posts.map((post, idx) => {

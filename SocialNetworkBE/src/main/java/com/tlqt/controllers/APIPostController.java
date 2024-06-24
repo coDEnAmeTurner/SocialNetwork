@@ -17,6 +17,8 @@ import com.tlqt.pojo.PostImage;
 import com.tlqt.pojo.Survey;
 import com.tlqt.pojo.SurveyQuestion;
 import com.tlqt.pojo.User;
+import com.tlqt.pojo.Vote;
+import com.tlqt.pojo.VotePK;
 import com.tlqt.services.ActionPostService;
 import com.tlqt.services.ActionService;
 import com.tlqt.services.ChoiceService;
@@ -28,6 +30,7 @@ import com.tlqt.services.PostService;
 import com.tlqt.services.QuestionService;
 import com.tlqt.services.SurveyService;
 import com.tlqt.services.UserService;
+import com.tlqt.services.VoteService;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -47,6 +50,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -100,6 +104,9 @@ public class APIPostController {
 
     @Autowired
     ActionService aService;
+    
+    @Autowired
+    VoteService vService;
 
     @PostMapping(path = "/posts/", consumes = {
         MediaType.APPLICATION_JSON_VALUE,

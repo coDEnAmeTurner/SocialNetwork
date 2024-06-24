@@ -126,13 +126,16 @@ public class APIUserController {
         user.setCreatedAt(Date.from(currentTime));
         user.setUpdatedAt(Date.from(currentTime));
         user.setBackground("https://res.cloudinary.com/dymtveeni/image/upload/v1719069374/irithyll_of_the_boreal_valley__2__by_twin_humanities_darpdcw_qcb6zj.jpg");
+        user.setTheme("#eb9123");
         if (file.length > 0) {
             user.setFile(file[0]);
         }
 
         this.userService.addUser(user);
 
-        TypicalUser tu = typicalUserService.getTypicalUserByUserId(user.getId());
+        TypicalUser tu = new TypicalUser();
+        tu.setUserId(user.getId());
+        tu.setUser(user);
         Degree degree = this.degreeService.getDegreeById(Integer.parseInt(params.get("degreeId")));
         tu.setDegreeId(degree);
         String academicRankIdParam = params.get("academicRankId");
@@ -151,7 +154,7 @@ public class APIUserController {
 
         this.alumnnService.addAlumnus(alumnus);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping(path = "/login/", consumes = {
@@ -267,6 +270,7 @@ public class APIUserController {
 
         Instant currentTime = Instant.now();
         user.setUpdatedAt(Date.from(currentTime));
+        user.setTheme(params.get("theme"));
         this.userService.update(user, newPass);
 
         TypicalUser tu = typicalUserService.getTypicalUserByUserId(userId);
@@ -338,7 +342,7 @@ public class APIUserController {
     @CrossOrigin
     public ResponseEntity<Object> countPost(Principal pr) {
         try {
-            int count = postService.countPostsByUserId(userService.getUserByUsername(pr.getName()).getId());
+            long count = postService.countPostsByUserId(userService.getUserByUsername(pr.getName()).getId());
             
             return new ResponseEntity<>(count, HttpStatus.OK);
         }catch (Exception ex ) {

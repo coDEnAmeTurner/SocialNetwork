@@ -53,7 +53,7 @@ public class PostServiceImpl implements PostService{
     }
     
     @Override
-    public int countPostsByUserId(int userId) {
+    public long countPostsByUserId(int userId) {
         return postRepo.countPostsByUserId(userId);
     }
 }

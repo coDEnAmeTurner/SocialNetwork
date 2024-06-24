@@ -25,7 +25,7 @@
             <th>Locked?</th>
             <th>Dispatching Admin</th>
             <th>Title</th>
-            <th></th>
+
         </tr>
         <c:forEach items="${queriedAlumni}" var="qa">
             <tr>
@@ -43,13 +43,10 @@
                 <td></td>
                 <td></td>
                 <td></td>
-                <td>
-                    <c:url value="/api/users/${qa[0]}" var="url" />
-                    <a class="btn btn-info" href="${url}" />Update</a>
-                    <button onclick="" class="btn btn-danger mt-1">Delete</button>
-                </td>
+
             </tr>
         </c:forEach>
+            
         <c:forEach items="${queriedLecturers}" var="ql">
             <tr>
                 <td>${ql[0]}</td>
@@ -66,11 +63,7 @@
                 <td>${ql[13]}</td>
                 <td>${ql[14]}</td>
                 <td>${ql[15]}</td>
-                <td>
-                    <c:url value="/api/users/${qa[0]}" var="url" />
-                    <a class="btn btn-info" href="${url}" />Update</a>
-                    <button onclick="" class="btn btn-danger mt-1">Delete</button>
-                </td>
+
             </tr>
         </c:forEach>
     </table>

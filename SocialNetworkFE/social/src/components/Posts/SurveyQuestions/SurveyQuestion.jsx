@@ -9,7 +9,7 @@ import { SurveyMode } from "../../../utils/accessMode";
 
 let nextChoiceIndex = 0;
 
-const SurveyQuestion = ({ surveyMode, id, content, choices }) => {
+const SurveyQuestion = ({ surveyMode, id, content, choices, vote }) => {
   const [questions, questionsDispatch] = useContext(QuestionsContext);
   const [hidden, setHidden] = useState(false);
 
@@ -121,12 +121,22 @@ const SurveyQuestion = ({ surveyMode, id, content, choices }) => {
         {choices && choices.length > 0 ? (
           <Form>
             {choices.map((choiceData) => (
+              (surveyMode === SurveyMode['forDisplay'] && choiceData.id === vote)?
               <SurveyChoice
                 surveyMode={surveyMode}
                 key={choiceData.id}
                 content={choiceData.content}
                 id={choiceData.id}
                 qId={id}
+                checked={true}
+              />:
+              <SurveyChoice
+                surveyMode={surveyMode}
+                key={choiceData.id}
+                content={choiceData.content}
+                id={choiceData.id}
+                qId={id}
+                checked={false}
               />
             ))}
           </Form>

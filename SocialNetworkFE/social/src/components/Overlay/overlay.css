@@ -15,5 +15,5 @@
   justify-content: center;
   width: 100%;
   min-height: 250px;
-  background-color: #222222;
+  background-image: linear-gradient(90deg, #0B1129ff, #0F1F46ff, #224173ff 50%, #0F1F46ff, #0B1129ff);
 }

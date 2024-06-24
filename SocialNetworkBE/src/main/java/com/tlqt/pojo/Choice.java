@@ -6,7 +6,9 @@ package com.tlqt.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,9 +18,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,6 +37,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Choice.findByContent", query = "SELECT c FROM Choice c WHERE c.content = :content"),
     @NamedQuery(name = "Choice.findByVoteCount", query = "SELECT c FROM Choice c WHERE c.voteCount = :voteCount")})
 public class Choice implements Serializable {
+
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "choiceId")
+    private Set<Vote> voteSet;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -113,6 +121,15 @@ public class Choice implements Serializable {
     @Override
     public String toString() {
         return "com.tlqt.pojo.Choice[ id=" + id + " ]";
+    }
+
+    @XmlTransient
+    public Set<Vote> getVoteSet() {
+        return voteSet;
+    }
+
+    public void setVoteSet(Set<Vote> voteSet) {
+        this.voteSet = voteSet;
     }
     
 }

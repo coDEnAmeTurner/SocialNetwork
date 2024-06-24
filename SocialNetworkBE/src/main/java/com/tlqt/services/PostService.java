@@ -26,5 +26,5 @@ public interface PostService {
 
     List<Post> getPostsByAuthorId(int authorId);
     
-    int countPostsByUserId(int userId);
+    long countPostsByUserId(int userId);
 }

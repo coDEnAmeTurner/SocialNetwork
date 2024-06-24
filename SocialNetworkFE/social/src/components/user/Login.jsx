@@ -64,7 +64,7 @@ export const getCurrentUser = (userDispatch, navigate) => {
     
     userDispatch({
       type: "login",
-      payload: { ...entireU, theme: "#eb9123" },
+      payload: { ...entireU},
     });
     navigate("/");
   }, 100);
@@ -143,7 +143,7 @@ const Login = () => {
 
         <div className="login-register"> Don't have an account yet? </div>
         <Link className="login-register-link" to="/signup">
-          Register now
+          Register As An Alumnus
         </Link>
       </div>
     </section>

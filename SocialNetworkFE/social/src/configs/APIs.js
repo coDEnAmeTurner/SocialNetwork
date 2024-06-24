@@ -44,7 +44,9 @@ export const endpoints = {
     'get-title-by-userId': (userId) => `/api/users/${userId}/get-title/`,
     'get-student-id-by-userId': (userId) => `/api/users/${userId}/get-student-id/`,
     'update-user-avatar': (userId) => `/api/users/${userId}/update-avatar/`,
-    'count-posts': `/api/users/count-posts/`
+    'count-posts': `/api/users/count-posts/`,
+    'vote': "/api/questions/vote/",
+    'get-vote': (questionId)=> `/api/questions/${questionId}/get-vote/`
 }
 
 export default axios.create({

@@ -155,13 +155,16 @@ public class HomeController {
                 u.setCreatedAt(Date.from(currentTime));
                 u.setUpdatedAt(Date.from(currentTime));
                 u.setBackground("https://res.cloudinary.com/dymtveeni/image/upload/v1719069374/irithyll_of_the_boreal_valley__2__by_twin_humanities_darpdcw_qcb6zj.jpg");
+                u.setTheme("#eb9123");
                 userService.addUser(u);
 
                 TypicalUser tu = new TypicalUser();
                 tu.setUserId(u.getId());
                 tu.setUser(u);
-                tu.setAcademicRankId(academicRankService.getAcademicRankById(fl.getAcademicRankId()));
-                tu.setDegreeId(dService.getDegreeById(fl.getDegreeId()));
+                String academicRank = fl.getAcademicRankId();
+                if (!academicRank.equals(""))
+                    tu.setAcademicRankId(academicRankService.getAcademicRankById(Integer.parseInt(academicRank)));
+                tu.setDegreeId(dService.getDegreeById(Integer.parseInt(fl.getDegreeId())));
                 tuService.addTypicalUser(tu);
 
                 Lecturer l = new Lecturer();
@@ -173,7 +176,7 @@ public class HomeController {
                 System.out.println(adUser.getEmail());
                 Admin admin = adService.getAdminByUserId(adUser.getId());
                 l.setDispatchingAdminId(admin);
-                l.setTitleId(titleService.getTitleById(fl.getTitleId()));
+                l.setTitleId(titleService.getTitleById(Integer.parseInt(fl.getTitleId())));
                 lService.addLecturer(l);
 
                 Email from = new Email(adUser.getEmail());
