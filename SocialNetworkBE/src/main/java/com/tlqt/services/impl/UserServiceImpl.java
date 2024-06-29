@@ -147,4 +147,8 @@ public class UserServiceImpl implements UserService {
         userRepo.update(user);
     }
 
+    
+    public List<User> getUsersByUsername(String queryName) {
+        return userRepo.getUsersByUsername(queryName);
+    }
 }

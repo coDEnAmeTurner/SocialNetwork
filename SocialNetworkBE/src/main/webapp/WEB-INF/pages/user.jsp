@@ -46,7 +46,7 @@
 
             </tr>
         </c:forEach>
-            
+
         <c:forEach items="${queriedLecturers}" var="ql">
             <tr>
                 <td>${ql[0]}</td>
@@ -57,10 +57,18 @@
                 <td>${ql[6]}</td>
                 <td>${ql[7]}</td>
                 <td>${ql[8]}</td>
-                <td>${ql[10]}</td>
+                <td>
+                    ${ql[10]}
+                </td>
                 <td>${ql[12]}</td>
                 <td></td>
-                <td>${ql[13]}</td>
+                <td>
+                    ${ql[13]}
+                    <c:if var="locked" test="${ql[13] == true}">
+                        <c:url value="/api/users/${ql[0]}/unlock-lecturer/" var="url" />
+                        <a onclick="unlockLecturer('${url}')"  class="btn btn-outline-danger m-1">Unlock!</a>
+                    </c:if>
+                </td>
                 <td>${ql[14]}</td>
                 <td>${ql[15]}</td>
 
@@ -68,3 +76,16 @@
         </c:forEach>
     </table>
 </div>
+
+<script>
+    const unlockLecturer = (url) => {
+        fetch(url, {method: 'PATCH'}).then(res => {
+            if (res.status === 200)
+                location.reload();
+            else 
+                alert("Unlocking failed!");
+            
+        });
+    }
+    
+</script>

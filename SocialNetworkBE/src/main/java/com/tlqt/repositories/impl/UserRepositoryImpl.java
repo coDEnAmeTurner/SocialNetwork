@@ -253,4 +253,16 @@ public class UserRepositoryImpl implements UserRepository {
         s.update(user);
     }
 
+    public List<User> getUsersByUsername(String queryName) {
+        Session s = factory.getObject().getCurrentSession();
+
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery q = b.createQuery(User.class);
+        Root r = q.from(User.class);
+        q.select(r);
+        q.where(b.like(r.get("username"), String.format("%%%s%%", queryName)));
+        Query query = s.createQuery(q);
+
+        return query.getResultList();
+    }
 }

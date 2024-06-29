@@ -17,6 +17,7 @@ import com.tlqt.pojo.UserRole;
 import com.tlqt.services.AcademicRankService;
 import com.tlqt.services.AlumnusService;
 import com.tlqt.services.DegreeService;
+import com.tlqt.services.EmailService;
 import com.tlqt.services.LecturerService;
 import com.tlqt.services.PostService;
 import com.tlqt.services.TitleService;
@@ -84,11 +85,25 @@ public class APIUserController {
     private TitleService titleService;
     @Autowired
     private BCryptPasswordEncoder encoder;
+    @Autowired
+    private EmailService eService;
+
+    @PatchMapping(path = "/users/{userId}/unlock-lecturer/")
+    public ResponseEntity<Object> unlockLecturer(@PathVariable(value = "userId") int userId) {
+        Lecturer l = lecturerService.getLecturerByTypicalUserId(userId);
+        l.setLocked(false);
+        Instant i = Instant.now();
+        Date d = Date.from(i);
+        l.setSetPassAt(d);
+        lecturerService.update(l);
+        
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PostMapping(path = "/users/", consumes = {
         MediaType.APPLICATION_JSON_VALUE,
         MediaType.MULTIPART_FORM_DATA_VALUE
-    })
+    }, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @CrossOrigin
     public ResponseEntity<Object> create(@RequestParam Map<String, String> params, @RequestPart MultipartFile[] file) throws ParseException {
@@ -154,7 +169,27 @@ public class APIUserController {
 
         this.alumnnService.addAlumnus(alumnus);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/users/check-locked/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    public ResponseEntity<Object> checkLocked(Principal p) {
+        User u = userService.getUserByUsername(p.getName());
+        Lecturer l = lecturerService.getLecturerByTypicalUserId(u.getId());
+        if (l.getLocked()) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } else {
+            Instant i = Instant.now();
+            Date today = Date.from(i);
+            if ((today.getTime() - l.getSetPassAt().getTime()) >= (120 * 1000) && encoder.matches("ou@123", u.getPassword())) {
+                l.setLocked(Boolean.TRUE);
+                lecturerService.update(l);
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "/login/", consumes = {
@@ -166,6 +201,22 @@ public class APIUserController {
 
         try {
             if (this.userService.authUser(username, password) == true) {
+                User u = userService.getUserByUsername(username);
+                if (u.getUserRoleId().getRoleName().equals("lecturer")) {
+                    Lecturer l = lecturerService.getLecturerByTypicalUserId(u.getId());
+                    if (l.getLocked()) {
+                        return new ResponseEntity<>("It has already passed 24 hours but your password hasn't been changed from the default value. Contact the admin to unlock your account!", HttpStatus.FORBIDDEN);
+                    } else {
+                        Instant i = Instant.now();
+                        Date today = Date.from(i);
+                        if ((today.getTime() - l.getSetPassAt().getTime()) >= (120 * 1000) && encoder.matches("ou@123", u.getPassword())) {
+                            l.setLocked(Boolean.TRUE);
+                            lecturerService.update(l);
+                            return new ResponseEntity<>("It has already passed 24 hours but your password hasn't been changed from the default value. Contact the admin to unlock your account!", HttpStatus.FORBIDDEN);
+                        }
+                    }
+                }
+                
                 String token = this.jwtService.generateTokenLogin(username);
 
                 return new ResponseEntity<>(token, HttpStatus.OK);
@@ -174,6 +225,7 @@ public class APIUserController {
         } catch (Exception ex) {
             return new ResponseEntity<>("Username or password is wrong!!!", HttpStatus.BAD_REQUEST);
         }
+
         return new ResponseEntity<>("Username or password is wrong!!!", HttpStatus.BAD_REQUEST);
     }
 
@@ -222,7 +274,7 @@ public class APIUserController {
 
         String userNameStr = params.get("username");
         String emailStr = params.get("email");
-        
+
         try {
             if (userService.getUserByUsername(userNameStr) != null && !user.getUsername().equals(userNameStr)) {
                 return new ResponseEntity<>("Username already exists!!!", HttpStatus.BAD_REQUEST);
@@ -250,7 +302,7 @@ public class APIUserController {
         if (file != null && file.length > 0) {
             user.setFile(file[0]);
         }
-        
+
         if (file1 != null && file1.length > 0) {
             user.setFile1(file1[0]);
         }
@@ -337,16 +389,34 @@ public class APIUserController {
 
         return new ResponseEntity<>(u.getStudentId(), HttpStatus.OK);
     }
-    
+
     @GetMapping(path = "/users/count-posts/", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
     public ResponseEntity<Object> countPost(Principal pr) {
         try {
             long count = postService.countPostsByUserId(userService.getUserByUsername(pr.getName()).getId());
-            
+
             return new ResponseEntity<>(count, HttpStatus.OK);
-        }catch (Exception ex ) {
+        } catch (Exception ex) {
             return new ResponseEntity<>("Cant count", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping(path = "/users/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    public ResponseEntity<List<User>> getUsersByUsername(@RequestParam(value = "queryName") String queryName) {
+        List<User> userList = userService.getUsersByUsername(queryName);
+
+        return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+    
+    @GetMapping(path="/users/get-inviIds/", produces=MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    public ResponseEntity<List<Object[]>> getInvitationIds(Principal p) {
+        User u = userService.getUserByUsername(p.getName());
+        
+        List<Object[]> invIds = eService.getInvitationIdsByEmail(u.getEmail());
+        
+        return new ResponseEntity<>(invIds, HttpStatus.OK);
     }
 }

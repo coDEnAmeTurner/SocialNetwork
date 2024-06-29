@@ -19,6 +19,7 @@ import com.tlqt.pojo.User;
 import com.tlqt.services.AcademicRankService;
 import com.tlqt.services.AdminService;
 import com.tlqt.services.DegreeService;
+import com.tlqt.services.FirebaseService;
 import com.tlqt.services.LecturerService;
 import com.tlqt.services.UserService;
 import com.tlqt.services.TitleService;
@@ -28,7 +29,9 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
 import javax.validation.Valid;
@@ -82,6 +85,9 @@ public class HomeController {
 
     @Autowired
     private LecturerService lService;
+    
+    @Autowired
+    private FirebaseService fService;
 
     @RequestMapping("/")
     public String index(Model model) {
@@ -115,7 +121,7 @@ public class HomeController {
     }
 
     @PostMapping("/users/create-lecturer/")
-    @Inject
+//    @Inject
     public String createLecturer(@ModelAttribute(value = "formLecturer") @Valid FormLecturer fl,
             BindingResult br, Model model) {
 
@@ -171,6 +177,7 @@ public class HomeController {
                 l.setTypicalUserId(tu.getUserId());
                 l.setTypicalUser(tu);
                 l.setLocked(false);
+                l.setSetPassAt(Date.from(currentTime));
                 Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
                 User adUser = userService.getUserByUsername(authentication.getName());
                 System.out.println(adUser.getEmail());

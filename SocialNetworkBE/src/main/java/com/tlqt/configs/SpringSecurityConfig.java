@@ -88,7 +88,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/login*").permitAll()
                 .antMatchers("/logout").permitAll()
-                .antMatchers("/**").hasAuthority("admin")
+                .antMatchers("/***").hasAuthority("admin")
                 .anyRequest().authenticated();
 
         http.exceptionHandling(ex -> ex.accessDeniedHandler(accessDeniedHandler()));

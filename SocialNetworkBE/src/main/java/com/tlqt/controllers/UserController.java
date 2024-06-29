@@ -5,18 +5,24 @@
 package com.tlqt.controllers;
 
 import com.tlqt.pojo.Admin;
+import com.tlqt.pojo.Lecturer;
 import com.tlqt.pojo.User;
 import com.tlqt.services.AdminService;
+import com.tlqt.services.LecturerService;
 import com.tlqt.services.UserRoleService;
 import com.tlqt.services.UserService;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -37,6 +43,9 @@ public class UserController {
     
     @Autowired
     AdminService aService;
+    
+    @Autowired
+    LecturerService lService;
     
     @PostMapping(path = "/users/create-admin/", consumes = {
         MediaType.APPLICATION_JSON_VALUE,
@@ -63,4 +72,6 @@ public class UserController {
         
         return new ResponseEntity<>(u, HttpStatus.CREATED);
     }
+    
+
 }

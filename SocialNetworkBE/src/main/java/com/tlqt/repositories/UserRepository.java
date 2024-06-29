@@ -36,4 +36,6 @@ public interface UserRepository {
     User getUserByCommentId(int commentId);
     
     void update(User user);
+    
+    public List<User> getUsersByUsername(String queryName);
 }

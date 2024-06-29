@@ -5,9 +5,12 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import APIs, { authApi, endpoints } from "../../configs/APIs";
 import { useContext, useEffect, useState } from "react";
-import { IsEditContext, MyUserContext } from "../../configs/Contexts";
+import { FrbUserContext, IsEditContext, MyUserContext } from "../../configs/Contexts";
 import cookie from "react-cookies";
 import { getCurrentUser } from "./Login";
+import {  collection, addDoc, getDoc, query, where, onSnapshot } from "firebase/firestore";
+import { db } from "../../firebase";
+import { v4 as uuidv4 } from "uuid";
 
 const Register = (props) => {
   const [degreeList, setDegreeList] = useState([]);
@@ -18,10 +21,12 @@ const Register = (props) => {
   const navigate = useNavigate();
   const [isEdit, isEditDispatch] = useContext(IsEditContext);
   const [user, userDispatch] = useContext(MyUserContext);
+  const [frbUser, frbUserDispatch] = useContext(FrbUserContext);
   const [titleList, setTitleList] = useState(null);
   const [newPass, setNewPass] = useState(false);
   const [submitting, setSubmitting] = useState(false);
-
+  const newUuid = uuidv4();
+  
   const getDegrees = async () => {
     try {
       const res = await APIs.get(endpoints["degreeList"]);
@@ -73,9 +78,19 @@ const Register = (props) => {
           "Content-Type": "multipart/form-data",
         },
       });
-
-      if (res.status === 201) navigate("/login");
       
+      if (res.status === 201) {
+        await addDoc(collection(db, "users"), {
+          id: newUuid,
+          fullName: newUser.fullName,
+          email: newUser.email,
+          username: newUser.username,
+          createdAt: res.data.createdAt,
+          avatar: res.data.avatar
+        })
+
+        navigate("/login");
+      }
     } catch (ex) {
       setError(ex.response.data);
       setSubmitting(false);
@@ -138,7 +153,7 @@ const Register = (props) => {
       degreeId: isEdit ? user?.degree?.id : null,
       academicRankId: isEdit && user?.rank ? user.rank.id : "",
       titleId: isEdit && user?.userRole?.id === 3 ? user?.title?.id : null,
-      theme: isEdit?user.theme:null
+      theme: isEdit ? user.theme : null,
     },
 
     validationSchema: Yup.object({
@@ -223,7 +238,6 @@ const Register = (props) => {
       };
 
       if (!isEdit) {
-        console.log("not edit");
         register(newUser, values.avatar);
       } else {
         newUser["newPass"] = newPass;
@@ -250,19 +264,29 @@ const Register = (props) => {
     <section className="register-container">
       {!isEdit ? (
         <>
-          <div className="register-title" style={{
-            fontSize: "1.8rem",
-            backgroundImage: "linear-gradient(225deg, #F58023 0%, #1e0144 100%)"
-          }}> Sign Up </div>
+          <div
+            className="register-title"
+            style={{
+              fontSize: "1.8rem",
+              backgroundImage:
+                "linear-gradient(225deg, #F58023 0%, #1e0144 100%)",
+            }}
+          >
+            {" "}
+            Sign Up{" "}
+          </div>
         </>
       ) : (
         <header
           style={{
             backgroundColor: `${user?.theme}`,
-            backgroundImage: background && typeof background == "string"
-              ? `url(${background})`
-              : background && typeof background != "string" ? `url(${URL.createObjectURL(background)})`:`linear-gradient(${user?.theme} 2%, ${user?.theme}, 65%, rgb(24, 24, 24) 100%)`,
-            backgroundPosition: "center"
+            backgroundImage:
+              background && typeof background == "string"
+                ? `url(${background})`
+                : background && typeof background != "string"
+                ? `url(${URL.createObjectURL(background)})`
+                : `linear-gradient(${user?.theme} 2%, ${user?.theme}, 65%, rgb(24, 24, 24) 100%)`,
+            backgroundPosition: "center",
           }}
         >
           <div className="close-container">
@@ -323,7 +347,7 @@ const Register = (props) => {
               style={{
                 display: "inline",
               }}
-              required={!isEdit?true:false}
+              required={!isEdit ? true : false}
               disabled={isEdit && user.userRole.id === 1 ? true : false}
             />
           </Form.Group>
@@ -360,7 +384,7 @@ const Register = (props) => {
                 className="theme-color"
                 type="color"
                 style={{
-                  width: "200px"
+                  width: "200px",
                 }}
                 name="theme"
                 onChange={formik.handleChange}
@@ -370,7 +394,7 @@ const Register = (props) => {
           ) : (
             <></>
           )}
-          
+
           <label className="fullname-label"> FULLNAME </label>
           <input
             id="fullname"
@@ -535,7 +559,7 @@ const Register = (props) => {
                 formik.handleChange(event);
               }}
               value={formik.values.dob}
-              required={!isEdit?true:false}
+              required={!isEdit ? true : false}
               disabled={isEdit && user.userRole.id === 1 ? true : false}
             />
           </Form.Group>
@@ -615,7 +639,7 @@ const Register = (props) => {
               No Rank.
             </option>
           </Form.Select>
-          
+
           {isEdit && user.userRole.id === 3 ? (
             <>
               <label className="title-label"> TITLE </label>
@@ -629,7 +653,8 @@ const Register = (props) => {
                 value={formik.values.titleId}
                 style={{
                   backgroundColor: "#da6b10",
-                  backgroundImage: "linear-gradient(225deg, #ff6e00 0%, #dd0000 100%)"
+                  backgroundImage:
+                    "linear-gradient(225deg, #ff6e00 0%, #dd0000 100%)",
                 }}
               >
                 {titleList?.length > 0 ? (
@@ -680,6 +705,7 @@ const Register = (props) => {
               {isEdit ? "Save" : "Create account"}
             </button>
           )}
+          
         </form>
 
         {isEdit ? (
@@ -687,9 +713,13 @@ const Register = (props) => {
         ) : (
           <>
             <div className="register-login"> Already have an account? </div>
-            <Link className="register-login-link" to="/login" style={{
-              marginBottom: "3.8rem"
-            }}>
+            <Link
+              className="register-login-link"
+              to="/login"
+              style={{
+                marginBottom: "3.8rem",
+              }}
+            >
               Log in
             </Link>
           </>

@@ -5,6 +5,7 @@
 package com.tlqt.pojo;
 
 import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,6 +16,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -30,6 +33,10 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Lecturer.findByTypicalUserId", query = "SELECT l FROM Lecturer l WHERE l.typicalUserId = :typicalUserId"),
     @NamedQuery(name = "Lecturer.findByLocked", query = "SELECT l FROM Lecturer l WHERE l.locked = :locked")})
 public class Lecturer implements Serializable {
+
+    @Column(name = "set_pass_at")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date setPassAt;
 
     private static final long serialVersionUID = 1L;
     @Id
@@ -120,6 +127,14 @@ public class Lecturer implements Serializable {
     @Override
     public String toString() {
         return "com.tlqt.pojo.Lecturer[ typicalUserId=" + typicalUserId + " ]";
+    }
+
+    public Date getSetPassAt() {
+        return setPassAt;
+    }
+
+    public void setSetPassAt(Date setPassAt) {
+        this.setPassAt = setPassAt;
     }
     
 }

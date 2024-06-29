@@ -10,6 +10,7 @@ import com.tlqt.validators.InvalidImage;
 import com.tlqt.validators.NotNull;
 import javax.persistence.Basic;
 import javax.persistence.Lob;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,9 +37,10 @@ public class FormLecturer {
     @NotNull(message = "email can't be empty!!!")
     @Lob
     @Size(min = 1, max = 2147483647)
+    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email (abc@xyz.com)")//if the field contains email address consider using this annotation to enforce field validation
     private String email;
 
-    @Size(min = 9, max = 11)
+    @Size(min = 9, max = 11, message = "size must be from 9 to 11")
     @NotNull(message = "phone can't be empty!!!")
     private String phone;
 

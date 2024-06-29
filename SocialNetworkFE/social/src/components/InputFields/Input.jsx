@@ -10,6 +10,7 @@ const InputField = (props) => {
     setData,
     label,
     classStyle,
+    setOpenSearch,
   } = props;
   return (
     <>
@@ -21,7 +22,6 @@ const InputField = (props) => {
           className={classStyle}
           placeholder={placeholder}
           onChange={(e) => setData(e.target.value)}
-          
         />
       ) : inputType === "file" ? (
         <input
@@ -42,17 +42,20 @@ const InputField = (props) => {
             className={classStyle}
             placeholder={placeholder}
             onChange={(e) => setData(e.target.value)}
-            style={
-              {
-                fontSize: '1rem',
-                marginLeft: '1rem',
-                backgroundColor: '#3b3b3b',
-                color: 'white',
-                width: '100%',
-                padding: '0.75rem 0.5rem',
-                borderRadius: '12px'
-              }
-            }
+            style={{
+              fontSize: "1rem",
+              marginLeft: "1rem",
+              backgroundColor: "#3b3b3b",
+              color: "white",
+              width: "100%",
+              padding: "0.75rem 0.5rem",
+              borderRadius: "12px",
+            }}
+            onClick={() => {
+              if (setOpenSearch)
+                setOpenSearch(true);
+            }}
+
           />
         </>
       )}

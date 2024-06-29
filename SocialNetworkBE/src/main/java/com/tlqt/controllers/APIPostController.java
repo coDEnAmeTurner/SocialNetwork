@@ -4,13 +4,19 @@
  */
 package com.tlqt.controllers;
 
-import com.sun.org.apache.bcel.internal.generic.INEG;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGrid;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
 import com.tlqt.pojo.Action;
 import com.tlqt.pojo.ActionPost;
 import com.tlqt.pojo.ActionPostPK;
 import com.tlqt.pojo.Choice;
 import com.tlqt.pojo.Comment;
 import com.tlqt.pojo.ContentType;
+import com.tlqt.pojo.Email;
 import com.tlqt.pojo.Invitation;
 import com.tlqt.pojo.Post;
 import com.tlqt.pojo.PostImage;
@@ -24,6 +30,7 @@ import com.tlqt.services.ActionService;
 import com.tlqt.services.ChoiceService;
 import com.tlqt.services.CommentService;
 import com.tlqt.services.ContentTypeService;
+import com.tlqt.services.EmailService;
 import com.tlqt.services.InvitationService;
 import com.tlqt.services.PostImageService;
 import com.tlqt.services.PostService;
@@ -31,6 +38,7 @@ import com.tlqt.services.QuestionService;
 import com.tlqt.services.SurveyService;
 import com.tlqt.services.UserService;
 import com.tlqt.services.VoteService;
+import java.io.IOException;
 import java.security.Principal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -104,16 +112,19 @@ public class APIPostController {
 
     @Autowired
     ActionService aService;
-    
+
     @Autowired
     VoteService vService;
+
+    @Autowired
+    EmailService eService;
 
     @PostMapping(path = "/posts/", consumes = {
         MediaType.APPLICATION_JSON_VALUE,
         MediaType.MULTIPART_FORM_DATA_VALUE
     })
     @CrossOrigin
-    public ResponseEntity<Object> createPost(@RequestParam Map<String, Object> params, @RequestPart MultipartFile[] files, Principal pr) throws ParseException {
+    public ResponseEntity<Object> createPost(@RequestParam Map<String, Object> params, @RequestPart MultipartFile[] files, Principal pr) throws ParseException, IOException {
         String title = (String) params.get("title");
         int contentTypeId = Integer.parseInt((String) params.get("contentTypeId"));
         boolean locked = Boolean.parseBoolean((String) params.get("locked"));
@@ -133,7 +144,7 @@ public class APIPostController {
         p.setUpdatedAt(Date.from(currentTime));
         postService.addPost(p);
 
-        if (!location.equals("") && !dateTimeStr.equals("")) {
+        if (contentTypeId == 2) {
             SimpleDateFormat inputFormatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm");
             Date dateTime = inputFormatter.parse(dateTimeStr);
             Invitation i = new Invitation();
@@ -142,32 +153,74 @@ public class APIPostController {
             i.setPostId(p.getId());
             i.setPost(p);
             iService.addInvitation(i);
+
+            System.out.println(params.get("mailCount"));
+            int mailCount = Integer.parseInt((String) params.get("mailCount"));
+            System.out.println((String) params.get(String.format("email%d", 0)));
+            String testMail = (String) params.get(String.format("email%d", 0));
+            if (!testMail.matches("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) {
+                return new ResponseEntity<>("Invalid email format (abc@xyz.com)", HttpStatus.BAD_REQUEST);
+            }
+
+            for (int j = 0; j < mailCount; j++) {
+                String email = (String) params.get(String.format("email%d", j));
+                Email e = new Email();
+                e.setEmail(email);
+                e.setInvitationId(i);
+                eService.add(e);
+
+                User admin = uService.getUserByUsername(pr.getName());
+
+                com.sendgrid.helpers.mail.objects.Email from = new com.sendgrid.helpers.mail.objects.Email(admin.getEmail());
+                com.sendgrid.helpers.mail.objects.Email to = new com.sendgrid.helpers.mail.objects.Email(email);
+                String subject = "You have an invitation!!!";
+                Content econtent = new Content("text/plain", "You have an invitation from a post in Social Network. Sign in the site to find out!");
+                Mail mail = new Mail(from, subject, to, econtent);
+
+                SendGrid sg = new SendGrid("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");
+                Request request = new Request();
+
+                try {
+                    request.setMethod(Method.POST);
+                    request.setEndpoint("mail/send");
+                    request.setBody(mail.build());
+                    Response response = sg.api(request);
+                    System.out.println(response.getStatusCode());
+                    System.out.println(response.getBody());
+                    System.out.println(response.getHeaders());
+
+                } catch (IOException ex) {
+                    throw ex;
+                }
+            }
         }
 
-        if (params.get("question0") != null) {
-            Survey survey = new Survey();
-            survey.setPostId(p.getId());
-            survey.setPost(p);
-            surveyService.addSurvey(survey);
-            int i = 0;
-            do {
-                SurveyQuestion sq = new SurveyQuestion();
-                sq.setContent((String) params.get(String.format("question%d", i)));
-                sq.setSurveyId(survey);
-                qService.addQuestion(sq);
-                int j = 0;
+        if (contentTypeId == 3) {
+            if (params.get("question0") != null) {
+                Survey survey = new Survey();
+                survey.setPostId(p.getId());
+                survey.setPost(p);
+                surveyService.addSurvey(survey);
+                int i = 0;
                 do {
-                    Choice choice = new Choice();
-                    choice.setContent((String) params.get(String.format("choice%d_%d", i, j)));
-                    choice.setVoteCount(0);
-                    choice.setSurveyQuestionId(sq);
-                    cService.addChoice(choice);
-                    j++;
-                } while (params.get(String.format("choice%d_%d", i, j)) != null);
+                    SurveyQuestion sq = new SurveyQuestion();
+                    sq.setContent((String) params.get(String.format("question%d", i)));
+                    sq.setSurveyId(survey);
+                    qService.addQuestion(sq);
+                    int j = 0;
+                    do {
+                        Choice choice = new Choice();
+                        choice.setContent((String) params.get(String.format("choice%d_%d", i, j)));
+                        choice.setVoteCount(0);
+                        choice.setSurveyQuestionId(sq);
+                        cService.addChoice(choice);
+                        j++;
+                    } while (params.get(String.format("choice%d_%d", i, j)) != null);
 
-                i++;
-            } while (params.get(String.format("question%d", i)) != null);
+                    i++;
+                } while (params.get(String.format("question%d", i)) != null);
 
+            }
         }
 
         if (files.length > 0) {
