@@ -57,4 +57,4 @@ The project's product is a fullstack app providing various typical social platfo
 - **ReactJS**: For Frontend
 - **ChartJS**: For the statistics
 - **SendGrid**: For sending email
-- **Firebase**: For real-time chat  
+- **Firebase**: For real-time chat
