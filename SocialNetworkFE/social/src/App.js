@@ -9,6 +9,7 @@ import {
   ChosenConversationReducer,
   ConversationsReducer,
   FrbUserReducer,
+  FullPostReducer,
   IsEditReducer,
   IsOpenPostReducer,
   IsOpenReducer,
@@ -21,6 +22,7 @@ import {
   ConversationsContext,
   EditPostContext,
   FrbUserContext,
+  FullPostContext,
   IsEditContext,
   IsOpenContext,
   IsOpenPostContext,
@@ -53,6 +55,10 @@ function App() {
     ChosenConversationReducer,
     null
   );
+  const [fullPost, fullPostDispatch] = useReducer(FullPostReducer, {
+    postId: null,
+    open: false,
+  });
 
   return (
     <div className="App">
@@ -67,58 +73,63 @@ function App() {
               <RoomContext.Provider value={[room, roomDispatch]}>
                 <IsEditContext.Provider value={[isEdit, isEditDispatch]}>
                   <MyUserContext.Provider value={[user, userDispatch]}>
-                    <EditPostContext.Provider value={[null, null]}>
-                      <IsOpenPostContext.Provider
-                        value={[isOpenPost, isOpenPostDispatch]}
-                      >
-                        <IsOpenContext.Provider
-                          value={[isOpen, isOpenDispatch]}
+                    <FullPostContext.Provider value={[null, null]}>
+                      <EditPostContext.Provider value={[null, null]}>
+                        <IsOpenPostContext.Provider
+                          value={[isOpenPost, isOpenPostDispatch]}
                         >
-                          <OpenMsgContext.Provider
-                            value={[openMsg, openMsgDispatch]}
+                          <IsOpenContext.Provider
+                            value={[isOpen, isOpenDispatch]}
                           >
-                            <Routes>
-                              <Route
-                                path="/"
-                                element={
-                                  <RequireAuth>
-                                    <HomePage />
-                                  </RequireAuth>
-                                }
-                              />
-                              <Route path="/login" element={<Login />} />
-                              <Route path="/signup" element={<Signup />} />
-                              <Route
-                                path="/make-a-post"
-                                element={
-                                  <RequireAuth>
-                                    <MakePost />
-                                  </RequireAuth>
-                                }
-                              />
-                              <Route
-                                path={`/user/:id`}
-                                element={
-                                  <RequireAuth>
-                                    <UserProfile />
-                                  </RequireAuth>
-                                }
-                              />
-                              <Route
-                                path="/chat/"
-                                element={
-                                  <RequireAuth>
-                                    <ChatHome />
-                                  </RequireAuth>
-                                }
-                              />
-                              <Route path="/landingPage" element={<LandingPage />} />
-                              <Route path="/test" element={<TestSpinner />} />
-                            </Routes>
-                          </OpenMsgContext.Provider>
-                        </IsOpenContext.Provider>
-                      </IsOpenPostContext.Provider>
-                    </EditPostContext.Provider>
+                            <OpenMsgContext.Provider
+                              value={[openMsg, openMsgDispatch]}
+                            >
+                              <Routes>
+                                <Route
+                                  path="/"
+                                  element={
+                                    <RequireAuth>
+                                      <HomePage />
+                                    </RequireAuth>
+                                  }
+                                />
+                                <Route path="/login" element={<Login />} />
+                                <Route path="/signup" element={<Signup />} />
+                                <Route
+                                  path="/make-a-post"
+                                  element={
+                                    <RequireAuth>
+                                      <MakePost />
+                                    </RequireAuth>
+                                  }
+                                />
+                                <Route
+                                  path={`/user/:id`}
+                                  element={
+                                    <RequireAuth>
+                                      <UserProfile />
+                                    </RequireAuth>
+                                  }
+                                />
+                                <Route
+                                  path="/chat/"
+                                  element={
+                                    <RequireAuth>
+                                      <ChatHome />
+                                    </RequireAuth>
+                                  }
+                                />
+                                <Route
+                                  path="/landingPage"
+                                  element={<LandingPage />}
+                                />
+                                <Route path="/test" element={<TestSpinner />} />
+                              </Routes>
+                            </OpenMsgContext.Provider>
+                          </IsOpenContext.Provider>
+                        </IsOpenPostContext.Provider>
+                      </EditPostContext.Provider>
+                    </FullPostContext.Provider>
                   </MyUserContext.Provider>
                 </IsEditContext.Provider>
               </RoomContext.Provider>

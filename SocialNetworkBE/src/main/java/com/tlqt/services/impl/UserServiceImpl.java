@@ -122,9 +122,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User user, Boolean newPass ) {
-        if (newPass) 
+    public void update(User user, Boolean newPass) {
+        if (newPass) {
             user.setPassword(passEncoder.encode(user.getPassword()));
+        }
 
         if (user.getFile() != null && !user.getFile().isEmpty()) {
             try {
@@ -134,7 +135,7 @@ public class UserServiceImpl implements UserService {
                 Logger.getLogger(UserServiceImpl.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
-        
+
         if (user.getFile1() != null && !user.getFile1().isEmpty()) {
             try {
                 Map res = this.cloudinary.uploader().upload(user.getFile1().getBytes(), ObjectUtils.asMap("resource_type", "auto"));
@@ -147,8 +148,23 @@ public class UserServiceImpl implements UserService {
         userRepo.update(user);
     }
 
-    
     public List<User> getUsersByUsername(String queryName) {
         return userRepo.getUsersByUsername(queryName);
+    }
+
+    @Override
+    public List<Object[]> countUsersByYear(int startYear, int endYear) {
+        return userRepo.countUsersByYear(startYear, endYear);
+    }
+
+    @Override
+    public List<Object[]> countUsersByMonth(int year) {
+        return userRepo.countUsersByMonth(year);
+    }
+
+    @Override
+    public List<Object[]> countUsersByQuarter(int year) {
+        return userRepo.countUsersByQuarter(year);
+
     }
 }

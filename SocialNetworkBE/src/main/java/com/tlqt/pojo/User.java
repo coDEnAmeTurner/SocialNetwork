@@ -57,7 +57,6 @@ public class User implements Serializable {
     @Size(max = 255)
     @Column(name = "theme")
     private String theme;
-    
 
     @Lob
     @Size(max = 2147483647)
@@ -103,14 +102,14 @@ public class User implements Serializable {
     @NotNull
     @Lob
     @Size(min = 1, max = 2147483647)
-    @Pattern(regexp="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message="Invalid email")//if the field contains email address consider using this annotation to enforce field validation
+    @Pattern(regexp = "[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?", message = "Invalid email")//if the field contains email address consider using this annotation to enforce field validation
     @Column(name = "email")
     private String email;
     // @Pattern(regexp="^\\(?(\\d{3})\\)?[- ]?(\\d{3})[- ]?(\\d{4})$", message="Invalid phone/fax format, should be as xxx-xxx-xxxx")//if the field contains phone or fax number consider using this annotation to enforce field validation
     @Size(max = 11)
     @Column(name = "phone")
     private String phone;
-    
+
     @JsonIgnore
     @OneToOne(cascade = CascadeType.ALL, mappedBy = "user")
     private TypicalUser typicalUser;
@@ -133,8 +132,10 @@ public class User implements Serializable {
     @JsonIgnore
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Set<Vote> voteSet;
+    @JsonIgnore
     @Transient
     private MultipartFile file;
+    @JsonIgnore
     @Transient
     private MultipartFile file1;
 

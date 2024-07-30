@@ -148,4 +148,12 @@ public class APISurveyQuestionController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+    
+    @GetMapping(path="/questions/{questionId}/count-votes/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    public ResponseEntity<List<Object[]>> countVotesPerChoice(@PathVariable(value="questionId") int questionId) {
+        List<Object[]> stats = qService.countVotesPerChoice(questionId);
+        
+        return new ResponseEntity<>(stats, HttpStatus.OK);
+    }
 }

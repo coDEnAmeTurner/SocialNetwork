@@ -47,7 +47,7 @@ const Posts = React.forwardRef((props, ref) => {
   const [comments, commentsDispatch] = useReducer(
     CommentsReducer,
     post.comments
-  );
+);
   const [editCom, editComDispatch] = useReducer(EditComReducer, null);
 
   const handleClose = () => {
@@ -280,7 +280,7 @@ const Posts = React.forwardRef((props, ref) => {
               )}
 
               <div className="features-container">
-                {user?.id === post.author?.id && (
+                {(user?.id === post.author?.id || user?.userRole.id === 1) && (
                   <div className="post-edit-delete">
                     <BsTrash
                       size={"24px"}

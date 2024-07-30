@@ -131,7 +131,7 @@ const Register = (props) => {
           });
           navigate("/login");
         } else {
-          getCurrentUser(userDispatch, navigate);
+          getCurrentUser(userDispatch, navigate, frbUserDispatch);
         }
       }
     } catch (ex) {
@@ -172,13 +172,13 @@ const Register = (props) => {
             .required("Required")
             .matches(
               /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-              "Please enter valid email address"
+              "Please enter valid email address abc@xyz.com"
             )
         : Yup.string()
             .max(50, "Maximum 50 character")
             .matches(
               /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
-              "Please enter valid email address"
+              "Please enter valid email address abc@xyz.com"
             ),
       password: !isEdit
         ? Yup.string()

@@ -38,7 +38,7 @@
                     </c:when>
                 </c:choose>
                 <li class="nav-item">
-                    <a class=" btn btn-danger ms-2" href="<c:url value="" />">Statistics</a>
+                    <a class=" btn btn-danger ms-2" href="<c:url value="/statistics/" />">Statistics</a>
                 </li>
             </ul>
         </div>

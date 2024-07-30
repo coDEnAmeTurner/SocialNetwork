@@ -107,110 +107,60 @@ public class UserRepositoryImpl implements UserRepository {
     @Override
     public List<Object[]> getAlumniAndRelatedInfo() {
         Session s = this.factory.getObject().getCurrentSession();
-        CriteriaBuilder builder = s.getCriteriaBuilder();
 
-        CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
+        Query query = s.createQuery(
+                "select ur.id, "
+                + "ur.roleName, "
+                + "u.id, "
+                + "u.fullName, "
+                + "u.avatar, "
+                + "u.username, "
+                + "u.dob, "
+                + "u.email, "
+                + "u.phone, "
+                + "d.id, "
+                + "d.degreeName, "
+                + "ar.id, "
+                + "ar.academicRankName, "
+                + "a.studentId, "
+                + "a.approved\n"
+                + "from TypicalUser tu left outer join AcademicRank ar on tu.academicRankId = ar.id\n"
+                + "inner join Degree d on tu.degreeId = d.id\n"
+                + "inner join Alumnus a on tu.userId = a.typicalUserId\n"
+                + "inner join User u on tu.userId = u.id, UserRole ur\n"
+                + "where u.userRoleId = ur.id");
 
-        Root<User> uRoot = query.from(User.class);
-        Root<TypicalUser> tuRoot = query.from(TypicalUser.class);
-        Root<Alumnus> aRoot = query.from(Alumnus.class);
-        Root<UserRole> urRoot = query.from(UserRole.class);
-        Root<Degree> dRoot = query.from(Degree.class);
-        Root<AcademicRank> arRoot = query.from(AcademicRank.class);
-
-        Predicate p1 = builder.equal(uRoot.get("id"), tuRoot.get("user"));
-        Predicate p2 = builder.equal(tuRoot.get("userId"), aRoot.get("typicalUser"));
-        Predicate p4 = builder.equal(urRoot.get("id"), uRoot.get("userRoleId"));
-        Predicate p7 = builder.equal(dRoot.get("id"), tuRoot.get("degreeId"));
-        Predicate p8 = builder.equal(arRoot.get("id"), tuRoot.get("academicRankId"));
-
-        query.where(builder.and(
-                p1,
-                p2,
-                p4,
-                p7,
-                p8
-        ));
-
-        query.multiselect(
-                uRoot.get("id"),
-                uRoot.get("fullName"),
-                uRoot.get("avatar"),
-                uRoot.get("username"),
-                urRoot.get("id"),
-                urRoot.get("roleName"),
-                uRoot.get("dob"),
-                uRoot.get("email"),
-                uRoot.get("phone"),
-                dRoot.get("id"),
-                dRoot.get("degreeName"),
-                arRoot.get("id"),
-                arRoot.get("academicRankName"),
-                aRoot.get("studentId")
-        );
-
-        Query qquery = s.createQuery(query);
-        List<Object[]> rs = qquery.getResultList();
-
-        return rs;
+        return query.getResultList();
     }
 
     @Override
     public List<Object[]> getLecturersAndRelatedInfo() {
         Session s = this.factory.getObject().getCurrentSession();
-        CriteriaBuilder builder = s.getCriteriaBuilder();
 
-        CriteriaQuery<Object[]> query = builder.createQuery(Object[].class);
+        Query query = s.createQuery(
+                "select t.titleName,"
+                + "ur.id, "
+                + "ur.roleName, "
+                + "u.id, "
+                + "u.fullName, "
+                + "u.avatar, "
+                + "u.username, "
+                + "u.dob, "
+                + "u.email, "
+                + "u.phone, "
+                + "d.id, "
+                + "d.degreeName, "
+                + "ar.id, "
+                + "ar.academicRankName, "
+                + "l.locked, "
+                + "l.dispatchingAdminId.userId\n"
+                + "from TypicalUser tu left outer join AcademicRank ar on tu.academicRankId = ar.id\n"
+                + "inner join Degree d on tu.degreeId = d.id\n"
+                + "inner join Lecturer l on tu.userId = l.typicalUserId\n"
+                + "inner join User u on tu.userId = u.id, UserRole ur, Title t\n"
+                + "where u.userRoleId = ur.id and l.titleId = t.id");
 
-        Root<User> uRoot = query.from(User.class);
-        Root<TypicalUser> tuRoot = query.from(TypicalUser.class);
-        Root<Lecturer> lRoot = query.from(Lecturer.class);
-        Root<UserRole> urRoot = query.from(UserRole.class);
-        Root<Degree> dRoot = query.from(Degree.class);
-        Root<AcademicRank> arRoot = query.from(AcademicRank.class);
-        Root<Title> tRoot = query.from(Title.class);
-        Root<Admin> adRoot = query.from(Admin.class);
-
-        Predicate p1 = builder.equal(uRoot.get("id"), tuRoot.get("user"));
-        Predicate p2 = builder.equal(tuRoot.get("userId"), lRoot.get("typicalUser"));
-        Predicate p4 = builder.equal(urRoot.get("id"), uRoot.get("userRoleId"));
-        Predicate p7 = builder.equal(dRoot.get("id"), tuRoot.get("degreeId"));
-        Predicate p8 = builder.equal(arRoot.get("id"), tuRoot.get("academicRankId"));
-        Predicate p9 = builder.equal(tRoot.get("id"), lRoot.get("titleId"));
-        Predicate p10 = builder.equal(adRoot.get("userId"), lRoot.get("dispatchingAdminId"));
-
-        query.where(builder.and(
-                p1,
-                p2,
-                p4,
-                p7,
-                p8,
-                p9
-        ));
-
-        query.multiselect(
-                uRoot.get("id"),
-                uRoot.get("fullName"),
-                uRoot.get("avatar"),
-                uRoot.get("username"),
-                urRoot.get("id"),
-                urRoot.get("roleName"),
-                uRoot.get("dob"),
-                uRoot.get("email"),
-                uRoot.get("phone"),
-                dRoot.get("id"),
-                dRoot.get("degreeName"),
-                arRoot.get("id"),
-                arRoot.get("academicRankName"),
-                lRoot.get("locked"),
-                adRoot.get("userId"),
-                tRoot.get("titleName")
-        );
-
-        Query qquery = s.createQuery(query);
-        List<Object[]> rs = qquery.getResultList();
-
-        return rs;
+        return query.getResultList();
     }
 
     @Override
@@ -264,5 +214,55 @@ public class UserRepositoryImpl implements UserRepository {
         Query query = s.createQuery(q);
 
         return query.getResultList();
+    }
+
+    @Override
+    public List<Object[]> countUsersByYear(int startYear, int endYear) {
+        Session s = factory.getObject().getCurrentSession();
+
+        Query q = s.createQuery(
+                "select year(user.createdAt), count(user.id)\n"
+                + "from User user\n"
+                + "where year(user.createdAt) <=: endYear and year(user.createdAt) >=: startYear\n"
+                + "group by year(user.createdAt)"
+        );
+
+        q.setParameter("startYear", startYear);
+        q.setParameter("endYear", endYear);
+
+        return q.getResultList();
+
+    }
+
+    @Override
+    public List<Object[]> countUsersByMonth(int year) {
+        Session s = factory.getObject().getCurrentSession();
+
+        Query q = s.createQuery(
+                "select year(user.createdAt), month(user.createdAt), count(user.id)\n"
+                + "from User user\n"
+                + "where year(user.createdAt) =: year\n"
+                + "group by year(user.createdAt), month(user.createdAt)"
+        );
+
+        q.setParameter("year", year);
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Object[]> countUsersByQuarter(int year) {
+        Session s = factory.getObject().getCurrentSession();
+
+        Query q = s.createQuery(
+                "select year(user.createdAt), quarter(user.createdAt), count(user.id)\n"
+                + "from User user\n"
+                + "where year(user.createdAt) =: year\n"
+                + "group by year(user.createdAt), quarter(user.createdAt)"
+        );
+
+        q.setParameter("year", year);
+
+        return q.getResultList();
     }
 }

@@ -231,18 +231,24 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
               form.append("email", mail.email);
               form.append("invitationId", `${currentPost.id}`);
               const mailAddRes = await authApi().post(
-                endpoints["create-email"], form, {headers: {
-                  "Content-Type": "application/json"
-                }}
+                endpoints["create-email"],
+                form,
+                {
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                }
               );
 
-              if (mailAddRes.status !== 201) 
+              if (mailAddRes.status !== 201)
                 throw new Error("invitation Request failed");
             }
 
             if (mail.deleted) {
-              const mailDelRes = await authApi().delete(endpoints['delete-email'](mail.id));
-              if (mailDelRes.status !== 204) 
+              const mailDelRes = await authApi().delete(
+                endpoints["delete-email"](mail.id)
+              );
+              if (mailDelRes.status !== 204)
                 throw new Error("invitation Request failed");
             }
           })
@@ -313,11 +319,11 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
       if (editPost.post.contentType.id === 1) {
         displaySaveSuccess();
       }
+      
     } catch (ex) {
       setPosting(false);
       console.error(ex);
-      if (ex instanceof AxiosError) 
-        setErrorMsg(ex.response.data);
+      if (ex instanceof AxiosError) setErrorMsg(ex.response.data);
     }
   };
 
@@ -346,7 +352,7 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
   }, []);
 
   useEffect(() => {
-    if (currentPost.contentType.id === 2) setMailList(currentPost.emails);
+    if (currentPost?.contentType?.id === 2) setMailList(currentPost.emails);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -379,10 +385,28 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
         .required("Required"),
       desc: Yup.string().min(4, "Minimum 4 characters").required("Required"),
       datetime:
-        pickedCT === 2 && accessMode===MakePostMode.forCreation ? Yup.string().required("Required") : Yup.string(),
+        pickedCT === 2 && accessMode === MakePostMode.forCreation
+          ? Yup.string().required("Required")
+          : Yup.string(),
       location:
-        pickedCT === 2 && accessMode===MakePostMode.forCreation ? Yup.string().required("Required") : Yup.string(),
-      email: pickedCT === 2 && accessMode===MakePostMode.forCreation ? Yup.string().required("Required") : Yup.string(),
+        pickedCT === 2 && accessMode === MakePostMode.forCreation
+          ? Yup.string().required("Required")
+          : Yup.string(),
+      email:
+        pickedCT === 2 && accessMode === MakePostMode.forCreation
+          ? Yup.string()
+              .max(50, "Maximum 50 character")
+              .required("Required")
+              .matches(
+                /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                "Please enter valid email address abc@xyz.com"
+              )
+          : Yup.string()
+              .max(50, "Maximum 50 character")
+              .matches(
+                /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                "Please enter valid email address abc@xyz.com"
+              ),
     }),
     onSubmit: (values) => {
       if (accessMode === MakePostMode["forCreation"]) {
@@ -559,11 +583,11 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
                     type: "toggle",
                     payload: {
                       ...editPost,
-                      post: { ...editPost.post, unlocked: !e.target.data },
+                      post: { ...editPost.post, unlocked: !e.target.checked },
                     },
                   });
               }}
-              value={
+              checked={
                 accessMode === MakePostMode.forCreation
                   ? formik.values.locked
                   : !editPost.post.unlocked
@@ -643,7 +667,7 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
                       },
                     });
                 }}
-                value={formik.values.dateTime}
+                value={formik.values.datetime}
               />
               {formik.errors.datetime && (
                 <p className="errorMsg">{formik.errors.dateTime}</p>
@@ -658,6 +682,7 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
                 data={typingMail}
                 onChange={(e) => {
                   setTypingMail(e.target.value);
+                  formik.handleChange(e);
                 }}
                 placeholder="Type an email!"
               />
@@ -767,7 +792,7 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
                         }}
                       >
                         {" "}
-                        mail.email{" "}
+                        {mail.email}{" "}
                       </ListGroup.Item>
                     ) : !mail.deleted ? (
                       <ListGroup.Item

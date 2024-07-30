@@ -72,37 +72,25 @@ const FeedHeader = () => {
           src={user?.avatar}
           className="feed-logo-img"
           alt=""
-          style={{ backgroundColor: `rgb(41, 128, 243)` }}
+          style={{ 
+            width: "9rem",
+            height: "9rem",
+            boxShadow: `${user?.theme}`
+          }}
         />
 
-        <div className="search-container">
-          <InputField
-            classStyle="search-bar"
-            placeholder="🔎 Search for username"
-            data={search}
-            setData={setSearch}
-          />
-
-          {openSearch && (
-            <div className="feed-username-display">
-              {result?.map((username) => {
-                return (
-                  <div
-                    className="user-container"
-                    onClick={() => goToProfile(username._id)}
-                  >
-                    <img
-                      style={{ backgroundColor: `${username.theme}` }}
-                      src={username.profilePicture}
-                      alt="profile pic"
-                      className="username-profile"
-                    />
-                    <div className="username"> u/{username.username}</div>
-                  </div>
-                );
-              })}
-            </div>
-          )}
+        <div
+          className="username"
+          style={{
+            color: `${user?.theme}`,
+            fontWeight: "bold",
+            marginLeft: "5px",
+            fontSize: "2.4rem",
+            border: "solid black 4px",
+            borderRadius: "15px",
+          }}
+        >
+          u/{user?.username}
         </div>
       </div>
 
@@ -135,7 +123,7 @@ const FeedHeader = () => {
           />
         </div>
 
-        {openNoti && user.invis && user.invis.length > 0 && (
+        {openNoti && user.invis && user.invis.length > 0 ? (
           <div
             className="feed-username-display"
             style={{
@@ -174,6 +162,17 @@ const FeedHeader = () => {
               );
             })}
           </div>
+        ) : openNoti ? (
+          <div
+            className="feed-username-display"
+            style={{
+              right: "10px",
+            }}
+          >
+            No notification yet{" "}
+          </div>
+        ) : (
+          <></>
         )}
       </div>
     </header>

@@ -15,4 +15,5 @@ public interface SurveyRepository {
     void addSurvey(Survey survey);
     
     Survey getSurveyByPostId(int postId);
+    
 }

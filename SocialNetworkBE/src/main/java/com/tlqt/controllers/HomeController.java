@@ -21,6 +21,7 @@ import com.tlqt.services.AdminService;
 import com.tlqt.services.DegreeService;
 import com.tlqt.services.FirebaseService;
 import com.tlqt.services.LecturerService;
+import com.tlqt.services.PostService;
 import com.tlqt.services.UserService;
 import com.tlqt.services.TitleService;
 import com.tlqt.services.TypicalUserService;
@@ -85,9 +86,12 @@ public class HomeController {
 
     @Autowired
     private LecturerService lService;
-    
+
     @Autowired
     private FirebaseService fService;
+    
+    @Autowired
+    private PostService pService;
 
     @RequestMapping("/")
     public String index(Model model) {
@@ -129,7 +133,7 @@ public class HomeController {
             try {
                 try {
                     if (userService.getUserByUsername(fl.getUsername()) != null) {
-                        model.addAttribute("usernameError","Username already exists!!!");
+                        model.addAttribute("usernameError", "Username already exists!!!");
                         return "createLecturer";
                     }
 
@@ -139,7 +143,7 @@ public class HomeController {
 
                 try {
                     if (userService.getUserByEmail(fl.getEmail()) != null) {
-                        model.addAttribute("emailError","Email already exists!!!");
+                        model.addAttribute("emailError", "Email already exists!!!");
                         return "createLecturer";
                     }
 
@@ -168,8 +172,9 @@ public class HomeController {
                 tu.setUserId(u.getId());
                 tu.setUser(u);
                 String academicRank = fl.getAcademicRankId();
-                if (!academicRank.equals(""))
+                if (!academicRank.equals("")) {
                     tu.setAcademicRankId(academicRankService.getAcademicRankById(Integer.parseInt(academicRank)));
+                }
                 tu.setDegreeId(dService.getDegreeById(Integer.parseInt(fl.getDegreeId())));
                 tuService.addTypicalUser(tu);
 
@@ -192,7 +197,7 @@ public class HomeController {
                 Content content = new Content("text/plain", String.format("username: %s\npassword: ou@123\nYou must change the password in 24 hours starting when this email is sent!!!", u.getUsername()));
                 Mail mail = new Mail(from, subject, to, content);
 
-                SendGrid sg = new SendGrid("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");
+                SendGrid sg = new SendGrid("");
                 Request request = new Request();
 
                 try {
@@ -219,5 +224,11 @@ public class HomeController {
         }
 
         return "createLecturer";
+    }
+
+    @GetMapping("/statistics/")
+    public String statistics(Model model) {
+        model.addAttribute("surveys", pService.getPostsByCategoryId(3));
+        return "statistics";
     }
 }

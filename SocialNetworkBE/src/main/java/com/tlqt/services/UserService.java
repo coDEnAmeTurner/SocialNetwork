@@ -40,4 +40,8 @@ public interface UserService extends UserDetailsService {
     void update(User user, Boolean newPass);
 
     public List<User> getUsersByUsername(String queryName);
-    }
+    
+    List<Object[]> countUsersByYear(int startYear, int endYear);
+    List<Object[]> countUsersByMonth(int year);
+    List<Object[]> countUsersByQuarter(int year);
+}

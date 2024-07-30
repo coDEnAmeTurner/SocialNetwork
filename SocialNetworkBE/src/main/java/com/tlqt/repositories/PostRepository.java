@@ -13,12 +13,27 @@ import org.springframework.transaction.annotation.Transactional;
  *
  * @author Admin
  */
-public interface PostRepository{
+public interface PostRepository {
+
     void addPost(Post p);
+
     List<Post> getPosts();
+
     void update(Post p);
+
     Post getPostById(int id);
+
     void deletePostById(int postId);
+
     List<Post> getPostsByAuthorId(int authorId);
+
     long countPostsByUserId(int userId);
+
+    List<Post> getPostsByCategoryId(int categoryId);
+
+    List<Object[]> countPostsByYear(int startYear, int endYear);
+
+    List<Object[]> countPostsByMonth(int year);
+
+    List<Object[]> countPostsByQuarter(int year);
 }

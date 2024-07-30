@@ -55,7 +55,7 @@ public class APIEmailController {
 
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (ConstraintViolationException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>("Email must comply with the format: abc@xyz.com", HttpStatus.INTERNAL_SERVER_ERROR);
 
         }
     }

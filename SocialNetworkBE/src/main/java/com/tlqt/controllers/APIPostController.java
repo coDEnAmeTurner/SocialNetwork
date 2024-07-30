@@ -66,6 +66,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -177,7 +178,7 @@ public class APIPostController {
                 Content econtent = new Content("text/plain", "You have an invitation from a post in Social Network. Sign in the site to find out!");
                 Mail mail = new Mail(from, subject, to, econtent);
 
-                SendGrid sg = new SendGrid("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");
+                SendGrid sg = new SendGrid("");
                 Request request = new Request();
 
                 try {
@@ -391,5 +392,46 @@ public class APIPostController {
 
         }
     }
+    
+    @GetMapping(path="/posts/make-stats/{surveyId}/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    public ResponseEntity<List<Object[]>> getSurveyStats(@PathVariable(value="surveyId") int surveyId) {
+        List<Object[]> stats = qService.getQuestionStatsBySurveyId(surveyId);
+        
+        return new ResponseEntity<>(stats, HttpStatus.OK);
+    }
 
+    @GetMapping(path = "/posts/count-posts-by-year/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    @ResponseBody
+    public ResponseEntity<List<Object[]>> countPostsByYear(@RequestParam String startYear, @RequestParam String endYear) {
+        int sy = Integer.parseInt(startYear);
+        int ey = Integer.parseInt(endYear);
+
+        List<Object[]> stats = postService.countPostsByYear(sy, ey);
+
+        return new ResponseEntity<>(stats, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/posts/count-posts-by-month/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    @ResponseBody
+    public ResponseEntity<List<Object[]>> countUsersByMonth(@RequestParam String year) {
+        int y = Integer.parseInt(year);
+
+        List<Object[]> stats = postService.countPostsByMonth(y);
+
+        return new ResponseEntity<>(stats, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/posts/count-posts-by-quarter/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    @ResponseBody
+    public ResponseEntity<List<Object[]>> countUsersByQuarter(@RequestParam String year) {
+        int y = Integer.parseInt(year);
+
+        List<Object[]> stats = postService.countPostsByQuarter(y);
+
+        return new ResponseEntity<>(stats, HttpStatus.OK);
+    }
 }
