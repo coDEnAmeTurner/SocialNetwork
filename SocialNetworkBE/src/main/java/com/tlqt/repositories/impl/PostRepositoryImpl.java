@@ -54,22 +54,22 @@ public class PostRepositoryImpl implements PostRepository {
     @Override
     public Post getPostById(int id) {
         Session s = factory.getObject().getCurrentSession();
-        
+
         Query q = s.createNamedQuery("Post.findById");
         q.setParameter("id", id);
-        
+
         return (Post) q.getSingleResult();
     }
 
     @Override
     public void deletePostById(int postId) {
         Session s = factory.getObject().getCurrentSession();
-        
+
         Query q = s.createNamedQuery("Post.findById");
         q.setParameter("id", postId);
-        
+
         Post p = (Post) q.getSingleResult();
-        
+
         s.delete(p);
     }
 
@@ -82,7 +82,7 @@ public class PostRepositoryImpl implements PostRepository {
         q.select(r);
         q.where(b.equal(r.get("userId"), authorId));
         Query query = s.createQuery(q);
-        
+
         return query.getResultList();
     }
 
@@ -95,15 +95,78 @@ public class PostRepositoryImpl implements PostRepository {
         Root pRoot = q.from(Post.class);
         q.multiselect(b.count(pRoot.get("id")), uRoot.get("id"));
         q.groupBy(uRoot.get("id"));
-        Predicate p1 = b.equal( uRoot.get("id"), userId);
+        Predicate p1 = b.equal(uRoot.get("id"), userId);
         Predicate p2 = b.equal(uRoot.get("id"), pRoot.get("userId"));
         q.where(b.and(p1, p2));
         Query query = s.createQuery(q);
         List<Object[]> queryTable = query.getResultList();
-        
+
         System.out.println("Result: " + queryTable.get(0)[0].getClass().getName());
-        
+
         return ((Long) queryTable.get(0)[0]).longValue();
     }
 
+    @Override
+    public List<Post> getPostsByCategoryId(int categoryId) {
+        Session s = factory.getObject().getCurrentSession();
+
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery q = b.createQuery(Post.class);
+        Root pRoot = q.from(Post.class);
+        q.select(pRoot);
+        q.where(b.equal(pRoot.get("contentTypeId"), categoryId));
+        Query query = s.createQuery(q);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public List<Object[]> countPostsByYear(int startYear, int endYear) {
+        Session s = factory.getObject().getCurrentSession();
+
+        Query q = s.createQuery(
+                "select year(post.createdAt), count(post.id)\n"
+                + "from Post post\n"
+                + "where year(post.createdAt) <=: endYear and year(post.createdAt) >=: startYear\n"
+                + "group by year(post.createdAt)"
+        );
+
+        q.setParameter("startYear", startYear);
+        q.setParameter("endYear", endYear);
+
+        return q.getResultList();
+
+    }
+
+    @Override
+    public List<Object[]> countPostsByMonth(int year) {
+        Session s = factory.getObject().getCurrentSession();
+
+        Query q = s.createQuery(
+                "select year(post.createdAt), month(post.createdAt), count(post.id)\n"
+                + "from Post post\n"
+                + "where year(post.createdAt) =: year\n"
+                + "group by year(post.createdAt), month(post.createdAt)"
+        );
+
+        q.setParameter("year", year);
+
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Object[]> countPostsByQuarter(int year) {
+        Session s = factory.getObject().getCurrentSession();
+
+        Query q = s.createQuery(
+                "select year(post.createdAt), quarter(post.createdAt), count(post.id)\n"
+                + "from Post post\n"
+                + "where year(post.createdAt) =: year\n"
+                + "group by year(post.createdAt), quarter(post.createdAt)"
+        );
+
+        q.setParameter("year", year);
+
+        return q.getResultList();
+    }
 }

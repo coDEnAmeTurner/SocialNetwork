@@ -4,11 +4,14 @@
  */
 package com.tlqt.pojo;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,6 +19,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -39,6 +43,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Invitation.findByDateTime", query = "SELECT i FROM Invitation i WHERE i.dateTime = :dateTime")})
 public class Invitation implements Serializable {
 
+    @JsonIgnore
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "invitationId")
+    private Collection<Email> emailCollection;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -50,6 +58,7 @@ public class Invitation implements Serializable {
     private String location;
     @Column(name = "date_time")
     @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", locale = "vi-VN", timezone = "Asia/Bangkok")
     private Date dateTime;
     
     @JoinColumn(name = "post_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -120,6 +129,15 @@ public class Invitation implements Serializable {
     @Override
     public String toString() {
         return "com.tlqt.pojo.Invitation[ postId=" + postId + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Email> getEmailCollection() {
+        return emailCollection;
+    }
+
+    public void setEmailCollection(Collection<Email> emailCollection) {
+        this.emailCollection = emailCollection;
     }
 
 }

@@ -23,6 +23,7 @@
     <class>com.tlqt.pojo.Survey</class>
     <class>com.tlqt.pojo.PostImage</class>
     <class>com.tlqt.pojo.Vote</class>
+    <class>com.tlqt.pojo.Email</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/socialdb?zeroDateTimeBehavior=CONVERT_TO_NULL"/>

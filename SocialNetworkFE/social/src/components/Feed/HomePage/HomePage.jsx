@@ -1,23 +1,15 @@
 import FeedLayout from "../Layout/FeedLayout";
 import "./homepage.css";
 import "../../Posts/post.css";
-import { useContext, useEffect, useReducer, useState } from "react";
-import Loading from "../../Loading/Loading";
+import { useEffect, useReducer, useState } from "react";
 import Posts from "../../Posts/Posts";
 import { EditPostReducer, FullPostReducer } from "../../../configs/Reducers";
-import {
-  EditPostContext,
-  FullPostContext,
-  MyUserContext,
-} from "../../../configs/Contexts";
+import { EditPostContext, FullPostContext } from "../../../configs/Contexts";
 import FullPost from "../../Posts/FullPost/FullPost";
-import { useNavigate } from "react-router-dom";
 import EditPost from "../../Posts/EditPost/EditPost";
-import cookie from "react-cookies";
-import { getCurrentUser } from "../../user/Login";
 import { authApi, endpoints } from "../../../configs/APIs";
 
-export const getEntirePost = async (rawPostInst, getAllComments) => {
+export const getEntirePost = async (rawPostInst) => {
   let post = {
     ...rawPostInst,
     locked: !rawPostInst.unlocked,
@@ -44,17 +36,21 @@ export const getEntirePost = async (rawPostInst, getAllComments) => {
   try {
     let cRes = await authApi().get(endpoints["get-comments-by-post"](post.id));
     if (cRes.status === 200) {
-      post.comments = await Promise.all(cRes.data.map(async (rawc)=>{
-        const uRes = await authApi().get(endpoints['get-author-by-comment'](rawc.id));
-        if (uRes.status === 200) {
-          return {
-            ...rawc,
-            owner: uRes.data
+      post.comments = await Promise.all(
+        cRes.data.map(async (rawc) => {
+          const uRes = await authApi().get(
+            endpoints["get-author-by-comment"](rawc.id)
+          );
+          if (uRes.status === 200) {
+            return {
+              ...rawc,
+              owner: uRes.data,
+            };
+          } else {
+            console.error(uRes);
           }
-        } else {
-          console.error(uRes);
-        }
-      }));
+        })
+      );
     }
   } catch (ex) {}
 
@@ -66,6 +62,12 @@ export const getEntirePost = async (rawPostInst, getAllComments) => {
     if (ires.status === 200) {
       post.location = ires.data.location;
       post.dateTime = ires.data.dateTime;
+
+      let eRes = await authApi().get(endpoints['get-emails'](post.id));
+      if (eRes.status === 200) {
+        post.emails = eRes.data;
+
+      }
     }
   }
 
@@ -85,12 +87,11 @@ export const getEntirePost = async (rawPostInst, getAllComments) => {
           }
 
           try {
-            let vRes = await authApi().get(endpoints['get-vote'](q.id))
-  
+            let vRes = await authApi().get(endpoints["get-vote"](q.id));
+
             if (vRes.status === 200) {
               q.vote = vRes.data.id;
             }
-
           } catch (ex) {
             q.vote = "";
           }
@@ -142,9 +143,9 @@ const HomePage = () => {
   }, [editPost, fullPost]);
 
   return (
-    <FeedLayout>
-      <FullPostContext.Provider value={[fullPost, fullPostDispatch]}>
-        <EditPostContext.Provider value={[editPost, editPostDispatch]}>
+    <FullPostContext.Provider value={[fullPost, fullPostDispatch]}>
+      <EditPostContext.Provider value={[editPost, editPostDispatch]}>
+        <FeedLayout>
           <section className="homepage-container">
             <div className="homepage-post">
               {fullPost?.open && <FullPost />}
@@ -168,9 +169,9 @@ const HomePage = () => {
               )}
             </div>
           </section>
-        </EditPostContext.Provider>
-      </FullPostContext.Provider>
-    </FeedLayout>
+        </FeedLayout>
+      </EditPostContext.Provider>
+    </FullPostContext.Provider>
   );
 };
 

@@ -9,6 +9,43 @@ export const MyUserReducer = (current, action) => {
     }
 };
 
+//QueryDocument
+export const FrbUserReducer = (current, action) => {
+    switch (action.type) {
+        case "set":
+            return action.payload;
+        default:
+            return current;
+    }
+};
+
+export const ConversationsReducer = (current, action) => {
+    switch (action.type) {
+        case "set":
+            return action.payload;
+        default:
+            return current;
+    }
+};
+
+export const PickedConverReducer = (current, action) => {
+    switch (action.type) {
+        case "set":
+            return action.payload;
+        default:
+            return current;
+    }
+};
+
+export const ChosenConversationReducer = (current, action) => {
+    switch (action.type) {
+        case "set":
+            return action.payload;
+        default:
+            return current;
+    }
+};
+
 export const IsOpenPostReducer = (current, action) => {
     switch (action.type) {
         case "toggle":
@@ -115,3 +152,13 @@ export const IsEditReducer = (current, action) => {
             return current;
     }
 }
+
+export const RoomReducer = (current, action) => {
+    switch (action.type) {
+        case "toggle": 
+            return action.payload
+        default:
+            return current;
+    }
+}
+

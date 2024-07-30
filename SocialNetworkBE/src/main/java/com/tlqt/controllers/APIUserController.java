@@ -4,6 +4,7 @@
  */
 package com.tlqt.controllers;
 
+import com.fasterxml.jackson.databind.exc.InvalidDefinitionException;
 import com.tlqt.components.JwtService;
 import com.tlqt.pojo.AcademicRank;
 import com.tlqt.pojo.Alumnus;
@@ -17,6 +18,7 @@ import com.tlqt.pojo.UserRole;
 import com.tlqt.services.AcademicRankService;
 import com.tlqt.services.AlumnusService;
 import com.tlqt.services.DegreeService;
+import com.tlqt.services.EmailService;
 import com.tlqt.services.LecturerService;
 import com.tlqt.services.PostService;
 import com.tlqt.services.TitleService;
@@ -48,6 +50,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -84,35 +87,57 @@ public class APIUserController {
     private TitleService titleService;
     @Autowired
     private BCryptPasswordEncoder encoder;
+    @Autowired
+    private EmailService eService;
+
+    @PatchMapping(path = "/users/{userId}/unlock-lecturer/")
+    public ResponseEntity<Object> unlockLecturer(@PathVariable(value = "userId") int userId) {
+        Lecturer l = lecturerService.getLecturerByTypicalUserId(userId);
+        l.setLocked(false);
+        Instant i = Instant.now();
+        Date d = Date.from(i);
+        l.setSetPassAt(d);
+        lecturerService.update(l);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @PatchMapping(path = "/users/{userId}/approve-alumnus/")
+    public ResponseEntity<Object> approveAlumnus(@PathVariable(value = "userId") int userId) {
+        System.out.println("approve entered!");
+        Alumnus a = alumnnService.getAlumnusByTypicalUserId(userId);
+        System.out.println(a.getStudentId());
+        a.setApproved(Boolean.TRUE);
+        alumnnService.update(a);
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 
     @PostMapping(path = "/users/", consumes = {
         MediaType.APPLICATION_JSON_VALUE,
         MediaType.MULTIPART_FORM_DATA_VALUE
-    })
+    }, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     @CrossOrigin
     public ResponseEntity<Object> create(@RequestParam Map<String, String> params, @RequestPart MultipartFile[] file) throws ParseException {
         String userNameStr = params.get("username");
         String emailStr = params.get("email");
-
         try {
             if (userService.getUserByUsername(userNameStr) != null) {
                 return new ResponseEntity<>("Username already exists!!!", HttpStatus.BAD_REQUEST);
             }
-
+            
         } catch (NoResultException ex) {
-
+            
         }
-
         try {
             if (userService.getUserByEmail(emailStr) != null) {
                 return new ResponseEntity<>("Email already exists!!!", HttpStatus.BAD_REQUEST);
             }
-
+            
         } catch (NoResultException ex) {
-
+            
         }
-
         User user = new User();
         user.setFullName(params.get("fullName"));
         user.setUsername(userNameStr);
@@ -130,9 +155,7 @@ public class APIUserController {
         if (file.length > 0) {
             user.setFile(file[0]);
         }
-
         this.userService.addUser(user);
-
         TypicalUser tu = new TypicalUser();
         tu.setUserId(user.getId());
         tu.setUser(user);
@@ -144,17 +167,36 @@ public class APIUserController {
             academicRank = this.academicRankService.getAcademicRankById(Integer.parseInt(academicRankIdParam));
         }
         tu.setAcademicRankId(academicRank);
-
         this.typicalUserService.addTypicalUser(tu);
-
         Alumnus alumnus = new Alumnus();
         alumnus.setTypicalUserId(tu.getUserId());
         alumnus.setTypicalUser(tu);
         alumnus.setStudentId(params.get("studentId"));
-
+        alumnus.setApproved(false);
         this.alumnnService.addAlumnus(alumnus);
+        
+        return new ResponseEntity<>(user, HttpStatus.CREATED);
 
-        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping(path = "/users/check-locked/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    public ResponseEntity<Object> checkLocked(Principal p) {
+        User u = userService.getUserByUsername(p.getName());
+        Lecturer l = lecturerService.getLecturerByTypicalUserId(u.getId());
+        if (l.getLocked()) {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        } else {
+            Instant i = Instant.now();
+            Date today = Date.from(i);
+            if ((today.getTime() - l.getSetPassAt().getTime()) >= (120 * 1000) && encoder.matches("ou@123", u.getPassword())) {
+                l.setLocked(Boolean.TRUE);
+                lecturerService.update(l);
+                return new ResponseEntity(HttpStatus.FORBIDDEN);
+            }
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping(path = "/login/", consumes = {
@@ -166,6 +208,27 @@ public class APIUserController {
 
         try {
             if (this.userService.authUser(username, password) == true) {
+                User u = userService.getUserByUsername(username);
+                if (u.getUserRoleId().getRoleName().equals("lecturer")) {
+                    Lecturer l = lecturerService.getLecturerByTypicalUserId(u.getId());
+                    if (l.getLocked()) {
+                        return new ResponseEntity<>("It has already passed 24 hours but your password hasn't been changed from the default value. Contact the admin to unlock your account!", HttpStatus.FORBIDDEN);
+                    } else {
+                        Instant i = Instant.now();
+                        Date today = Date.from(i);
+                        if ((today.getTime() - l.getSetPassAt().getTime()) >= (120 * 1000) && encoder.matches("ou@123", u.getPassword())) {
+                            l.setLocked(Boolean.TRUE);
+                            lecturerService.update(l);
+                            return new ResponseEntity<>("It has already passed 24 hours but your password hasn't been changed from the default value. Contact the admin to unlock your account!", HttpStatus.FORBIDDEN);
+                        }
+                    }
+                } else if (u.getUserRoleId().getRoleName().equals("alumnus")) {
+                    Alumnus a = alumnnService.getAlumnusByTypicalUserId(u.getId());
+                    if (a.getApproved() == false) {
+                        return new ResponseEntity<>("Your alumnus account hasn't been approved yet! Try logging in another time!", HttpStatus.FORBIDDEN);
+                    }
+                }
+
                 String token = this.jwtService.generateTokenLogin(username);
 
                 return new ResponseEntity<>(token, HttpStatus.OK);
@@ -174,6 +237,7 @@ public class APIUserController {
         } catch (Exception ex) {
             return new ResponseEntity<>("Username or password is wrong!!!", HttpStatus.BAD_REQUEST);
         }
+
         return new ResponseEntity<>("Username or password is wrong!!!", HttpStatus.BAD_REQUEST);
     }
 
@@ -222,7 +286,7 @@ public class APIUserController {
 
         String userNameStr = params.get("username");
         String emailStr = params.get("email");
-        
+
         try {
             if (userService.getUserByUsername(userNameStr) != null && !user.getUsername().equals(userNameStr)) {
                 return new ResponseEntity<>("Username already exists!!!", HttpStatus.BAD_REQUEST);
@@ -250,7 +314,7 @@ public class APIUserController {
         if (file != null && file.length > 0) {
             user.setFile(file[0]);
         }
-        
+
         if (file1 != null && file1.length > 0) {
             user.setFile1(file1[0]);
         }
@@ -337,16 +401,68 @@ public class APIUserController {
 
         return new ResponseEntity<>(u.getStudentId(), HttpStatus.OK);
     }
-    
+
     @GetMapping(path = "/users/count-posts/", produces = MediaType.APPLICATION_JSON_VALUE)
     @CrossOrigin
     public ResponseEntity<Object> countPost(Principal pr) {
         try {
             long count = postService.countPostsByUserId(userService.getUserByUsername(pr.getName()).getId());
-            
+
             return new ResponseEntity<>(count, HttpStatus.OK);
-        }catch (Exception ex ) {
+        } catch (Exception ex) {
             return new ResponseEntity<>("Cant count", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @GetMapping(path = "/users/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    public ResponseEntity<List<User>> getUsersByUsername(@RequestParam(value = "queryName") String queryName) {
+        List<User> userList = userService.getUsersByUsername(queryName);
+
+        return new ResponseEntity<>(userList, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/users/get-inviIds/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    public ResponseEntity<List<Object[]>> getInvitationIds(Principal p) {
+        User u = userService.getUserByUsername(p.getName());
+
+        List<Object[]> invIds = eService.getInvitationIdsByEmail(u.getEmail());
+
+        return new ResponseEntity<>(invIds, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/users/count-users-by-year/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    @ResponseBody
+    public ResponseEntity<List<Object[]>> countUsersByYear(@RequestParam String startYear, @RequestParam String endYear) {
+        int sy = Integer.parseInt(startYear);
+        int ey = Integer.parseInt(endYear);
+
+        List<Object[]> stats = userService.countUsersByYear(sy, ey);
+
+        return new ResponseEntity<>(stats, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/users/count-users-by-month/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    @ResponseBody
+    public ResponseEntity<List<Object[]>> countUsersByMonth(@RequestParam String year) {
+        int y = Integer.parseInt(year);
+
+        List<Object[]> stats = userService.countUsersByMonth(y);
+
+        return new ResponseEntity<>(stats, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/users/count-users-by-quarter/", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    @ResponseBody
+    public ResponseEntity<List<Object[]>> countUsersByQuarter(@RequestParam String year) {
+        int y = Integer.parseInt(year);
+
+        List<Object[]> stats = userService.countUsersByQuarter(y);
+
+        return new ResponseEntity<>(stats, HttpStatus.OK);
     }
 }

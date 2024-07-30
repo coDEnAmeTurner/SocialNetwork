@@ -25,5 +25,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/XML/XMLDocument.xml to edit this 
         <put-attribute name="title" value="CREATE LECTURER ADMINISTRATION" />
         <put-attribute name="content" value="/WEB-INF/pages/createLecturer.jsp" />
     </definition>
+    <definition name="statistics" extends="baseLayout">
+        <put-attribute name="title" value="STATISTICS" />
+        <put-attribute name="content" value="/WEB-INF/pages/statistics.jsp" />
+    </definition>
 </tiles-definitions>
 

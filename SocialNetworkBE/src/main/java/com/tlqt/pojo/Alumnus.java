@@ -31,6 +31,9 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Alumnus.findByStudentId", query = "SELECT a FROM Alumnus a WHERE a.studentId = :studentId")})
 public class Alumnus implements Serializable {
 
+    @Column(name = "approved")
+    private Boolean approved;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -106,6 +109,14 @@ public class Alumnus implements Serializable {
     @Override
     public String toString() {
         return "com.tlqt.pojo.Alumnus[ typicalUserId=" + typicalUserId + " ]";
+    }
+
+    public Boolean getApproved() {
+        return approved;
+    }
+
+    public void setApproved(Boolean approved) {
+        this.approved = approved;
     }
     
 }

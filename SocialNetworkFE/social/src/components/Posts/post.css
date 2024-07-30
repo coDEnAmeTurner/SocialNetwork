@@ -5,7 +5,12 @@
   margin-bottom: 5rem;
   min-height: 100vh;
   min-width: 57%;
-  background-image: linear-gradient(0deg, #324E7D 8%, #224173 13.75%, #0A2A5D 60%);
+  background-image: linear-gradient(
+    0deg,
+    #324e7d 8%,
+    #224173 13.75%,
+    #0a2a5d 60%
+  );
   padding: 0.75rem 1.25rem 0 1.25rem;
   border-radius: 14px;
   display: flex;
@@ -38,6 +43,7 @@
   margin-bottom: 1rem;
 }
 
+.makepost-email,
 .makepost-datetime,
 .makepost-location {
   background-color: #535353;
@@ -94,7 +100,8 @@
   justify-content: space-between;
 }
 
-.makepost-add-choice, .makepost-save-bottom {
+.makepost-add-choice,
+.makepost-save-bottom {
   text-align: center;
   display: flex;
   width: 100%;
@@ -130,7 +137,7 @@
   background-color: #0386d1;
 }
 
-.makepost-tags>button {
+.makepost-tags > button {
   font-weight: 700;
   background-color: #535353;
   color: white;
@@ -182,7 +189,7 @@ input[type="file"] {
   content: "Upload image";
 }
 
-.makepost-img-preview>img {
+.makepost-img-preview > img {
   max-width: 300px;
   max-height: 200px;
   object-fit: contain;
@@ -270,9 +277,8 @@ input[type="file"] {
   align-items: center;
 }
 
-f.comments-interact>form {
+f.comments-interact > form {
   max-width: 100%;
-
 }
 
 .comment-input {
@@ -311,11 +317,13 @@ f.comments-interact>form {
   font-size: 1rem;
   max-width: 100%;
   align-self: center;
+  min-width: 100px;
 }
 
-input[type=radio], input[type=checkbox] {
-  height:30px; 
-  width:30px;
+input[type="radio"],
+input[type="checkbox"] {
+  height: 30px;
+  width: 30px;
 }
 
 .makepost-spinner {
@@ -323,4 +331,19 @@ input[type=radio], input[type=checkbox] {
   display: flex;
   margin-top: 1rem;
   margin-bottom: 2rem;
+}
+
+.list-item {
+  background-color: #535353;
+  color: white;
+  border: none;
+  font-size: 1.15rem;
+  font-family: "Noto Sans", sans-serif;
+  padding: 0.25rem 0.5rem 1rem 0.5rem;
+  margin-bottom: 0;
+  margin-top: 0;
+}
+
+.list {
+  border-radius: 4px;
 }

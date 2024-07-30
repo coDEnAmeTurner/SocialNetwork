@@ -47,7 +47,7 @@ const Posts = React.forwardRef((props, ref) => {
   const [comments, commentsDispatch] = useReducer(
     CommentsReducer,
     post.comments
-  );
+);
   const [editCom, editComDispatch] = useReducer(EditComReducer, null);
 
   const handleClose = () => {
@@ -213,9 +213,15 @@ const Posts = React.forwardRef((props, ref) => {
   ) : (
     <EditComContext.Provider value={[editCom, editComDispatch]}>
       <CommentsContext.Provider value={[comments, commentsDispatch]}>
-        <div key={post?.id} ref={ref} className="post-container" style={{
-          backgroundImage: "linear-gradient(0deg, #324E7D 8%, #224173 30%, #0A2A5D 60%)"
-        }}>
+        <div
+          key={post?.id}
+          ref={ref}
+          className="post-container"
+          style={{
+            backgroundImage:
+              "linear-gradient(0deg, #324E7D 8%, #224173 30%, #0A2A5D 60%)",
+          }}
+        >
           {fullPost?.open ? (
             <div className="close-post" onClick={handleClose}>
               Close
@@ -274,7 +280,7 @@ const Posts = React.forwardRef((props, ref) => {
               )}
 
               <div className="features-container">
-                {user?.id === post.author?.id && (
+                {(user?.id === post.author?.id || user?.userRole.id === 1) && (
                   <div className="post-edit-delete">
                     <BsTrash
                       size={"24px"}
@@ -321,6 +327,19 @@ const Posts = React.forwardRef((props, ref) => {
                   ) : (
                     <></>
                   )}
+                  {post?.emails ? (
+                    <div>
+                      <div>Receivers:</div>
+                      <div style={{
+                        paddingLeft: "3rem"
+                      }}>
+                        {post.emails.map(mail => {return (mail.email + ";\n")})}
+
+                      </div>
+                    </div>
+                  ) : (
+                    <></>
+                  )}
                   {post?.questions ? (
                     <QuestionsContext.Provider
                       value={[questions, questionsDispatch]}
@@ -358,9 +377,12 @@ const Posts = React.forwardRef((props, ref) => {
 
             <div className="post-interactions">
               <div className="post-vote">
-                <div className="upvote" style={{
-                  margin: "3px"
-                }}>
+                <div
+                  className="upvote"
+                  style={{
+                    margin: "3px",
+                  }}
+                >
                   {isLike ? (
                     <BiLike
                       size={"24px"}
@@ -372,9 +394,12 @@ const Posts = React.forwardRef((props, ref) => {
                   )}
                 </div>
 
-                <div className="haha" style={{
-                  margin: "3px"
-                }}>
+                <div
+                  className="haha"
+                  style={{
+                    margin: "3px",
+                  }}
+                >
                   {isHaha ? (
                     <BiLaugh
                       size={"24px"}
@@ -385,9 +410,12 @@ const Posts = React.forwardRef((props, ref) => {
                     <BiLaugh size={"24px"} color="white" onClick={handleHaha} />
                   )}
                 </div>
-                <div className="love" style={{
-                  margin: "3px"
-                }}>
+                <div
+                  className="love"
+                  style={{
+                    margin: "3px",
+                  }}
+                >
                   {isLove ? (
                     <BiHeart
                       size={"24px"}

@@ -3,12 +3,19 @@ import { CgProfile } from "react-icons/cg";
 import { BiExit } from "react-icons/bi";
 import "./navbar.css";
 import { useContext } from "react";
-import { MyUserContext } from "../../../configs/Contexts";
+import { ChosenConversationContext, ConversationsContext, MyUserContext } from "../../../configs/Contexts";
 import cookie from "react-cookies"
+import { SiPayloadcms } from "react-icons/si";
 
 const SideNavBar = (props) => {
   const { id } = props;
   const [user, userDispatch] = useContext(MyUserContext);
+  const [conversations, conversationsDispatch] = useContext(
+    ConversationsContext
+  );
+  const [chosenConversation, chosenConversationDispatch] = useContext(
+    ChosenConversationContext
+  );
   const nav = useNavigate();
 
   const logout = () => {
@@ -16,6 +23,15 @@ const SideNavBar = (props) => {
       type: 'logout'
     });
     cookie.remove('token');
+    conversationsDispatch({
+      type: "set",
+      payload: null
+    })
+    chosenConversationDispatch({
+      type: "set",
+      payload: null
+    })
+
     nav('/login');
   }
 

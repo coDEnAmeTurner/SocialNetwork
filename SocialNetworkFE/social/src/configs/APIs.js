@@ -37,6 +37,7 @@ export const endpoints = {
     'delete-comment': (commentId) => `/api/comments/${commentId}/`,
     'update-comment': (commentId) => `/api/comments/${commentId}/`,
     'do-action': (postId) => `/api/posts/${postId}/do-action/`,
+    'get-emails': (inviId) => `/api/invitations/${inviId}/get-emails/`,
     'update-user': (userId) => `/api/users/${userId}/`,
     'titles': "/api/titles/",
     'get-rank-by-userId': (userId) => `/api/users/${userId}/get-rank/`,
@@ -46,7 +47,12 @@ export const endpoints = {
     'update-user-avatar': (userId) => `/api/users/${userId}/update-avatar/`,
     'count-posts': `/api/users/count-posts/`,
     'vote': "/api/questions/vote/",
-    'get-vote': (questionId)=> `/api/questions/${questionId}/get-vote/`
+    'get-vote': (questionId)=> `/api/questions/${questionId}/get-vote/`,
+    'get-users-by-username': "/api/users/",
+    "check-locked": "/api/users/check-locked/",
+    "get-inviIds": "/api/users/get-inviIds/",
+    "create-email": "/api/emails/",
+    "delete-email": (emailId)=>`/api/emails/${emailId}/`
 }
 
 export default axios.create({

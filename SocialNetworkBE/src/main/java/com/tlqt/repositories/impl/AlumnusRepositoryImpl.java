@@ -44,7 +44,9 @@ public class AlumnusRepositoryImpl implements AlumnusRepository {
 
     @Override
     public void update(Alumnus a) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        Session s = this.factory.getObject().getCurrentSession();
+        
+        s.update(a);
     }
 
 }
