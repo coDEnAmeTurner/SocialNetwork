@@ -5,7 +5,7 @@
 # SOCIAL NETWORK FOR UNIVERSITY'S ALUMNI
 
 ![image](https://github.com/user-attachments/assets/63793b70-7471-4964-b9bc-6633c449a068)
-![image](https://github.com/user-attachments/assets/2ffa3557-b804-4aa5-a91f-720ae9acca7a)
+![image](https://github.com/user-attachments/assets/a858159c-e148-46f2-80c0-4990639ddd0e)
 ![image](https://github.com/user-attachments/assets/2826d23e-7a46-4421-8a41-95d4c8714966)
 ![image](https://github.com/user-attachments/assets/72532b3f-bf4c-45a2-8011-0d4ff6987601)
 ![image](https://github.com/user-attachments/assets/a3e8e60a-371b-4d2d-925a-e14d125217a8)
