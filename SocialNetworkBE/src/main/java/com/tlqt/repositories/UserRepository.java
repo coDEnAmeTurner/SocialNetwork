@@ -14,6 +14,10 @@ import java.util.List;
 public interface UserRepository {
 
     List<User> getUsers();
+    
+    List<String> getAllEmails();
+    
+    List<Object[]> getAllEmailsAndRelatedInfo();
 
     User getUserByUsername(String username);
 

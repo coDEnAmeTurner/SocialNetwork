@@ -265,4 +265,30 @@ public class UserRepositoryImpl implements UserRepository {
 
         return q.getResultList();
     }
+
+    @Override
+    public List<String> getAllEmails() {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        CriteriaBuilder builder = s.getCriteriaBuilder();
+
+        CriteriaQuery query = builder.createQuery(User.class);
+        Root root = query.from(User.class);
+        query.select(root.get("email"));
+
+        return s.createQuery(query).getResultList();
+    }
+
+    @Override
+    public List<Object[]> getAllEmailsAndRelatedInfo() {
+        Session s = this.factory.getObject().getCurrentSession();
+
+        CriteriaBuilder builder = s.getCriteriaBuilder();
+
+        CriteriaQuery query = builder.createQuery(Object[].class);
+        Root root = query.from(User.class);
+        query.multiselect(root.get("fullName"), root.get("email"));
+        
+        return s.createQuery(query).getResultList();
+    }
 }

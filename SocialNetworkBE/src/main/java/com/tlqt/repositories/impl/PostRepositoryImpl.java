@@ -169,4 +169,18 @@ public class PostRepositoryImpl implements PostRepository {
 
         return q.getResultList();
     }
+
+    @Override
+    public List<Post> getAllPostsByDescendingUpdatedAt() {
+        Session s = factory.getObject().getCurrentSession();
+
+        CriteriaBuilder b = s.getCriteriaBuilder();
+        CriteriaQuery q = b.createQuery(Post.class);
+        Root pRoot = q.from(Post.class);
+        q.select(pRoot);
+        q.orderBy(b.desc(pRoot.get("updatedAt")));
+        Query query = s.createQuery(q);
+
+        return query.getResultList();
+    }
 }

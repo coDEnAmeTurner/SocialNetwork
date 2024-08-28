@@ -243,7 +243,7 @@ public class APIPostController {
     })
     @CrossOrigin
     public ResponseEntity<List<Post>> getPosts() {
-        List<Post> posts = this.postService.getPosts();
+        List<Post> posts = this.postService.getAllPostsByDescendingUpdatedAt();
 
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }

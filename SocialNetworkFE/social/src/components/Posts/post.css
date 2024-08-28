@@ -18,8 +18,9 @@
 }
 
 .post-edit-delete {
-  margin-top: 1rem;
+  margin-top: 5px;
   margin-left: 1rem;
+  cursor: pointer;
 }
 
 .makepost-navigation {
@@ -41,9 +42,9 @@
   padding: 0.25rem 0.5rem 4rem 0.5rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  resize: none;
 }
 
-.makepost-email,
 .makepost-datetime,
 .makepost-location {
   background-color: #535353;
@@ -56,8 +57,33 @@
   margin-bottom: 1rem;
 }
 
+.makepost-email {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-auto-rows: minmax(4vw, auto);
+  background-color: #535353;
+  color: white;
+  border: none;
+  font-size: 1.15rem;
+  font-family: "Noto Sans", sans-serif;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+}
+
+.makepost-email-input {
+  grid-column-start: 1;
+  grid-column-end: 2;
+  display: block;
+  background-color: #535353;
+  color: white;
+  border: none;
+  font-size: 1.15rem;
+  font-family: "Noto Sans", sans-serif;
+  border-radius: 4px;
+}
+
 .makepost-title {
-  height: 50px;
   background-color: #535353;
   color: white;
   border: none;
@@ -66,6 +92,7 @@
   padding: 0.25rem 0.5rem 4rem 0.5rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  resize: none;
 }
 
 .content-type-select {
@@ -346,4 +373,24 @@ input[type="checkbox"] {
 
 .list {
   border-radius: 4px;
+}
+
+
+.email-options {
+  display: block;
+  background-color: #535353;
+  padding: 0.4rem;
+  border-radius: 5px;
+}
+
+.email-options-item {
+  border-radius: 5px;
+  list-style-type: none;
+  padding: 0.3rem;
+  bottom: 5px;
+}
+
+.email-options-item:hover {
+  background-color: #7c7b7b;
+  cursor: pointer;
 }
