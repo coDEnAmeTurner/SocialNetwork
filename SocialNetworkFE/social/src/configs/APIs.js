@@ -49,10 +49,13 @@ export const endpoints = {
     'vote': "/api/questions/vote/",
     'get-vote': (questionId)=> `/api/questions/${questionId}/get-vote/`,
     'get-users-by-username': "/api/users/",
+    'get-all-users': "/api/users/all",
     "check-locked": "/api/users/check-locked/",
     "get-inviIds": "/api/users/get-inviIds/",
     "create-email": "/api/emails/",
-    "delete-email": (emailId)=>`/api/emails/${emailId}/`
+    "delete-email": (emailId)=>`/api/emails/${emailId}/`,
+    "get-all-emails": "/api/users/emails/",
+    "get-all-emails-info": "/api/users/emails-info/"
 }
 
 export default axios.create({

@@ -36,4 +36,6 @@ public interface PostRepository {
     List<Object[]> countPostsByMonth(int year);
 
     List<Object[]> countPostsByQuarter(int year);
+    
+    List<Post> getAllPostsByDescendingUpdatedAt();
 }

@@ -90,6 +90,20 @@ public class APIUserController {
     @Autowired
     private EmailService eService;
 
+    @GetMapping(path = "/users/emails/")
+    public ResponseEntity<List<String>> getAllEmails() {
+        List<String> allMails = this.userService.getAllEmails();
+
+        return new ResponseEntity<>(allMails, HttpStatus.OK);
+    }
+    
+    @GetMapping(path = "/users/emails-info/")
+    public ResponseEntity<List<Object[]>> getAllEmailsAndRelatedInfo() {
+        List<Object[]> allMails = this.userService.getAllEmailsAndRelatedInfo();
+
+        return new ResponseEntity<>(allMails, HttpStatus.OK);
+    }
+
     @PatchMapping(path = "/users/{userId}/unlock-lecturer/")
     public ResponseEntity<Object> unlockLecturer(@PathVariable(value = "userId") int userId) {
         Lecturer l = lecturerService.getLecturerByTypicalUserId(userId);
@@ -101,7 +115,7 @@ public class APIUserController {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-    
+
     @PatchMapping(path = "/users/{userId}/approve-alumnus/")
     public ResponseEntity<Object> approveAlumnus(@PathVariable(value = "userId") int userId) {
         System.out.println("approve entered!");
@@ -126,17 +140,17 @@ public class APIUserController {
             if (userService.getUserByUsername(userNameStr) != null) {
                 return new ResponseEntity<>("Username already exists!!!", HttpStatus.BAD_REQUEST);
             }
-            
+
         } catch (NoResultException ex) {
-            
+
         }
         try {
             if (userService.getUserByEmail(emailStr) != null) {
                 return new ResponseEntity<>("Email already exists!!!", HttpStatus.BAD_REQUEST);
             }
-            
+
         } catch (NoResultException ex) {
-            
+
         }
         User user = new User();
         user.setFullName(params.get("fullName"));
@@ -174,7 +188,7 @@ public class APIUserController {
         alumnus.setStudentId(params.get("studentId"));
         alumnus.setApproved(false);
         this.alumnnService.addAlumnus(alumnus);
-        
+
         return new ResponseEntity<>(user, HttpStatus.CREATED);
 
     }
@@ -412,6 +426,14 @@ public class APIUserController {
         } catch (Exception ex) {
             return new ResponseEntity<>("Cant count", HttpStatus.BAD_REQUEST);
         }
+    }
+    
+    @GetMapping(path = "/users/all", produces = MediaType.APPLICATION_JSON_VALUE)
+    @CrossOrigin
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> userList = userService.getUsers();
+
+        return new ResponseEntity<>(userList, HttpStatus.OK);
     }
 
     @GetMapping(path = "/users/", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -25,6 +25,8 @@ public interface PostService {
     void deletePostById(int postId);
 
     List<Post> getPostsByAuthorId(int authorId);
+    
+    List<Post> getAllPostsByDescendingUpdatedAt();
 
     long countPostsByUserId(int userId);
 

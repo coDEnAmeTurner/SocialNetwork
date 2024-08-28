@@ -55,12 +55,16 @@
   margin-right: 20rem;
   min-width: 26rem;
   border-radius: 14px;
+  grid-template-rows: 1fr 5fr;
 }
 
+
 .post-context {
-  text-align: start;
   margin-top: 0.75rem;
+  overflow-wrap: anywhere;
+
 }
+
 
 .post-context>button {
   font-size: 0.85rem;
@@ -85,6 +89,7 @@
   font-family: "Noto Sans", sans-serif;
   margin-top: 0.5rem;
   font-size: 0.85rem;
+  
 }
 
 .post-desc-readmore {
@@ -105,9 +110,6 @@
   align-items: center;
 }
 
-.post-edit-delete {
-  cursor: pointer;
-}
 
 .add-to-favorites {
   cursor: pointer;
@@ -117,7 +119,8 @@
   margin-left: auto;
   margin-right: 1.25rem;
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+
 }
 
 .close-post {

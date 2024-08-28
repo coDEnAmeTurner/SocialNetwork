@@ -77,4 +77,9 @@ public class PostServiceImpl implements PostService{
         return postRepo.countPostsByQuarter(year);
 
     }
+
+    @Override
+    public List<Post> getAllPostsByDescendingUpdatedAt() {
+        return this.postRepo.getAllPostsByDescendingUpdatedAt();
+    }
 }

@@ -167,4 +167,16 @@ public class UserServiceImpl implements UserService {
         return userRepo.countUsersByQuarter(year);
 
     }
+
+    @Override
+    public List<String> getAllEmails() {
+        return this.userRepo.getAllEmails();
+    }
+
+    @Override
+    public List<Object[]> getAllEmailsAndRelatedInfo() {
+        return this.userRepo.getAllEmailsAndRelatedInfo();
+    }
+
+
 }

@@ -41,7 +41,9 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
   const [errorMsg, setErrorMsg] = useState("");
   const [typingMail, setTypingMail] = useState(null);
   const [mailList, setMailList] = useState(null);
-  const [chosenItem, setChosenItem] = useState(null);
+  const [filteredMailList, setFilteredMailList] = useState([]);
+  const [chosenMailList, setChosenMailList] = useState([]);
+  const [mailOutFocus, setMailOutFocus] = useState(true);
 
   const navigate = useNavigate();
 
@@ -319,7 +321,6 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
       if (editPost.post.contentType.id === 1) {
         displaySaveSuccess();
       }
-      
     } catch (ex) {
       setPosting(false);
       console.error(ex);
@@ -355,6 +356,20 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
     if (currentPost?.contentType?.id === 2) setMailList(currentPost.emails);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    getAllEmails();
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pickedCT]);
+
+  const getAllEmails = async () => {
+    if (pickedCT === "2") {
+      const res = await authApi().get(endpoints["get-all-emails"]);
+      if (res.status === 200) setMailList(res.data);
+      else console.error(res);
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -673,145 +688,55 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
                 <p className="errorMsg">{formik.errors.dateTime}</p>
               )}
 
-              <label className="Email"> Email: </label>
-              <input
-                id="email"
-                name="email"
-                type="text"
-                className="makepost-email"
-                data={typingMail}
-                onChange={(e) => {
-                  setTypingMail(e.target.value);
-                  formik.handleChange(e);
-                }}
-                placeholder="Type an email!"
-              />
-              {formik.errors.email && (
-                <p className="errorMsg">{formik.errors.email}</p>
-              )}
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-around",
-                }}
-              >
-                <button
-                  className="add-mail"
-                  style={{
-                    marginTop: "1px",
-                    backgroundColor: "#F58023",
-                  }}
-                  onClick={(e) => {
-                    if (mailList)
-                      setMailList([
-                        ...mailList,
-                        accessMode === MakePostMode.forEdit
-                          ? { new: true, email: typingMail }
-                          : typingMail,
-                      ]);
-                    else setMailList([typingMail]);
-                  }}
-                  type="button"
-                >
-                  <IoAddCircle
-                    style={{
-                      width: "25px",
-                      height: "25px",
+              <div style={{ position: "relative" }}>
+                <label className="Email"> Email: </label>
+                <div className="makepost-email">
+                  {chosenMailList?.length > 0 ? (
+                    chosenMailList.map((chosenMail) => {
+                      return <div classname="chosen-mail">{chosenMail}</div>;
+                    })
+                  ) : (
+                    <></>
+                  )}
+                  <input
+                    className="makepost-email-input"
+                    id="email"
+                    name="email"
+                    type="text"
+                    data={typingMail}
+                    onFocus={() => {
+                      setMailOutFocus(false);
                     }}
-                  />
-                </button>
-
-                <button
-                  className="add-mail"
-                  style={{
-                    marginTop: "1px",
-                    backgroundColor: "#F58023",
-                  }}
-                  onClick={(e) => {
-                    if (chosenItem === 0) {
-                      if (accessMode === MakePostMode.forCreation)
-                        setMailList(mailList.slice(1));
-                      else {
-                        const edit = structuredClone(mailList);
-                        edit[chosenItem] = {
-                          ...edit[chosenItem],
-                          deleted: true,
-                        };
-                        setMailList(edit);
-                      }
-                      setChosenItem(null);
-                    }
-
-                    if (chosenItem) {
-                      if (accessMode === MakePostMode.forCreation)
-                        setMailList(
-                          mailList
-                            .slice(0, chosenItem)
-                            .concat(mailList.slice(chosenItem + 1))
-                        );
-                      else {
-                        const edit = structuredClone(mailList);
-                        edit[chosenItem] = {
-                          ...edit[chosenItem],
-                          deleted: true,
-                        };
-                        setMailList(edit);
-                      }
-                      setChosenItem(null);
-                    }
-                  }}
-                  type="button"
-                >
-                  <VscRemove
-                    style={{
-                      width: "25px",
-                      height: "25px",
+                    onChange={(e) => {
+                      setTypingMail(e.target.value);
+                      setFilteredMailList(
+                        mailList.filter((mail) => {
+                          return mail.includes(e.target.value);
+                        })
+                      );
                     }}
+                    onBlur={() => {
+                      setMailOutFocus(true);
+                    }}
+                    placeholder="Type an email!"
                   />
-                </button>
+                </div>
+
+                {formik.errors.email && (
+                  <p className="errorMsg">{formik.errors.email}</p>
+                )}
+                {filteredMailList?.length > 0 && !mailOutFocus ? (
+                  <ul className="email-options">
+                    {filteredMailList.map((mail) => {
+                      return <li className="email-options-item" onClick={(e)=>{
+                        setChosenMailList([...chosenMailList, mail])
+                      }}>{mail}</li>;
+                    })}
+                  </ul>
+                ) : (
+                  <></>
+                )}
               </div>
-
-              {!mailList ? (
-                <></>
-              ) : (
-                <ListGroup
-                  variant="flush"
-                  style={{
-                    marginTop: "1rem",
-                  }}
-                  className="list"
-                >
-                  {mailList.map((mail, index) => {
-                    return accessMode === MakePostMode.forCreation ? (
-                      <ListGroup.Item
-                        className="list-item"
-                        action
-                        type="button"
-                        onClick={(e) => {
-                          setChosenItem(index);
-                        }}
-                      >
-                        {" "}
-                        {mail.email}{" "}
-                      </ListGroup.Item>
-                    ) : !mail.deleted ? (
-                      <ListGroup.Item
-                        className="list-item"
-                        action
-                        type="button"
-                        onClick={(e) => {
-                          setChosenItem(index);
-                        }}
-                      >
-                        {" "}
-                        {mail.email}{" "}
-                      </ListGroup.Item>
-                    ) : (
-                      <></>
-                    );
-                  })}
-                </ListGroup>
-              )}
             </>
           ) : (
             <></>
