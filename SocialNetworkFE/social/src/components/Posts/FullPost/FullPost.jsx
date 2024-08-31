@@ -1,13 +1,15 @@
 import { useContext, useEffect, useState } from "react";
 import Overlay from "../../Overlay/Overlay";
 import Posts from "../Posts";
-import { FullPostContext } from "../../../configs/Contexts";
+import { EditPostContext, FullPostContext } from "../../../configs/Contexts";
 import Loading from "../../Loading/Loading";
 
 const FullPost = () => {
   // eslint-disable-next-line no-unused-vars
   const [fullPost, fullPostDispatch] = useContext(FullPostContext);
+  const [editPost, editPostDispatch] = useContext(EditPostContext);
   const [onePost, setOnePost] = useState(null);
+  
 
   useEffect(() => {
     setOnePost(fullPost?.post);
@@ -16,7 +18,7 @@ const FullPost = () => {
 
   return (
     <Overlay>
-      {!onePost ? (
+      {!onePost? (
         <Loading
           loadingType="BeatLoader"
           color="white"
@@ -24,9 +26,10 @@ const FullPost = () => {
           loading={true}
         />
       ) : (
+        !editPost.open?
         <section className="fullpost-container">
           <Posts type="fullpost" key={onePost.id} post={onePost} />
-        </section>
+        </section>:<></>
       )}
     </Overlay>
   );

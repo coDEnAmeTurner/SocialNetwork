@@ -80,9 +80,6 @@ const ConverPreview = ({ conver, id}) => {
           });
           openConver(e);
         }}
-        style={
-          {backgroundColor: pickedConverKey === id?"rgb(16, 25, 61)":"transparent"}
-        }
         id={id}
       >
         <img
