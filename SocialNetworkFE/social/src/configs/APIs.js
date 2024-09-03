@@ -1,7 +1,7 @@
 import axios from "axios";
 import cookie from "react-cookies";
 
-const BASE_URL = 'http://localhost:8288/SocialNetworkBE/';
+const BASE_URL = 'https://socialnetworkbe-latest.onrender.com/SocialNetworkBE-1.0-SNAPSHOT/';
 
 export const endpoints = {
     'register': '/api/users/',
