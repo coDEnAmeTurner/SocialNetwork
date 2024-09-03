@@ -223,25 +223,25 @@ public class APIUserController {
         try {
             if (this.userService.authUser(username, password) == true) {
                 User u = userService.getUserByUsername(username);
-                if (u.getUserRoleId().getRoleName().equals("lecturer")) {
-                    Lecturer l = lecturerService.getLecturerByTypicalUserId(u.getId());
-                    if (l.getLocked()) {
-                        return new ResponseEntity<>("It has already passed 24 hours but your password hasn't been changed from the default value. Contact the admin to unlock your account!", HttpStatus.FORBIDDEN);
-                    } else {
-                        Instant i = Instant.now();
-                        Date today = Date.from(i);
-                        if ((today.getTime() - l.getSetPassAt().getTime()) >= (120 * 1000) && encoder.matches("ou@123", u.getPassword())) {
-                            l.setLocked(Boolean.TRUE);
-                            lecturerService.update(l);
-                            return new ResponseEntity<>("It has already passed 24 hours but your password hasn't been changed from the default value. Contact the admin to unlock your account!", HttpStatus.FORBIDDEN);
-                        }
-                    }
-                } else if (u.getUserRoleId().getRoleName().equals("alumnus")) {
-                    Alumnus a = alumnnService.getAlumnusByTypicalUserId(u.getId());
-                    if (a.getApproved() == false) {
-                        return new ResponseEntity<>("Your alumnus account hasn't been approved yet! Try logging in another time!", HttpStatus.FORBIDDEN);
-                    }
-                }
+//                if (u.getUserRoleId().getRoleName().equals("lecturer")) {
+//                    Lecturer l = lecturerService.getLecturerByTypicalUserId(u.getId());
+//                    if (l.getLocked()) {
+//                        return new ResponseEntity<>("It has already passed 24 hours but your password hasn't been changed from the default value. Contact the admin to unlock your account!", HttpStatus.FORBIDDEN);
+//                    } else {
+//                        Instant i = Instant.now();
+//                        Date today = Date.from(i);
+//                        if ((today.getTime() - l.getSetPassAt().getTime()) >= (120 * 1000) && encoder.matches("ou@123", u.getPassword())) {
+//                            l.setLocked(Boolean.TRUE);
+//                            lecturerService.update(l);
+//                            return new ResponseEntity<>("It has already passed 24 hours but your password hasn't been changed from the default value. Contact the admin to unlock your account!", HttpStatus.FORBIDDEN);
+//                        }
+//                    }
+//                } else if (u.getUserRoleId().getRoleName().equals("alumnus")) {
+//                    Alumnus a = alumnnService.getAlumnusByTypicalUserId(u.getId());
+//                    if (a.getApproved() == false) {
+//                        return new ResponseEntity<>("Your alumnus account hasn't been approved yet! Try logging in another time!", HttpStatus.FORBIDDEN);
+//                    }
+//                }
 
                 String token = this.jwtService.generateTokenLogin(username);
 

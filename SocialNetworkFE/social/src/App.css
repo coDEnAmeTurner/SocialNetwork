@@ -86,6 +86,7 @@ body {
   text-align: center;
 }
 .userprofile-container {
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
   height: 100vh;
