@@ -95,6 +95,7 @@ const Register = (props) => {
       setError(ex.response.data);
       setSubmitting(false);
       console.error(ex);
+      window.scroll(0, 0);
     }
   };
 
@@ -138,6 +139,8 @@ const Register = (props) => {
       setError(ex?.response?.data);
       setSubmitting(false);
       console.error(ex);
+      window.scroll(0, 0);
+
     }
   };
 

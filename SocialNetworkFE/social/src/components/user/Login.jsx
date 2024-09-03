@@ -126,7 +126,6 @@ export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
         }
       } catch (ex) {
         console.log(ex);
-        
       }
     } catch (ex) {
       console.error(ex);
@@ -136,7 +135,7 @@ export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
       type: "login",
       payload: { ...entireU },
     });
-    
+
     navigate("/");
   }, 100);
 };
@@ -167,6 +166,7 @@ const Login = () => {
       if (ex instanceof AxiosError) {
         setSubmitting(false);
         setErrorMsg(ex.response.data);
+        window.scroll(0, 0);
       }
     }
   };
@@ -228,7 +228,6 @@ const Login = () => {
             </button>
           ) : (
             <button type="submit"> Continue </button>
-            
           )}
         </form>
 
