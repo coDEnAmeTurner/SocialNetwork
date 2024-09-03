@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { v4 as uuidv4 } from "uuid";
+import { FastField } from "formik";
 
 export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
   //fetch real api returning current user
@@ -125,6 +126,7 @@ export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
         }
       } catch (ex) {
         console.log(ex);
+        
       }
     } catch (ex) {
       console.error(ex);
@@ -134,6 +136,7 @@ export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
       type: "login",
       payload: { ...entireU },
     });
+    
     navigate("/");
   }, 100);
 };
@@ -162,6 +165,7 @@ const Login = () => {
       }
     } catch (ex) {
       if (ex instanceof AxiosError) {
+        setSubmitting(false);
         setErrorMsg(ex.response.data);
       }
     }
@@ -169,7 +173,7 @@ const Login = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
+    setSubmitting(true);
     const user = {
       username: username,
       password: password,
