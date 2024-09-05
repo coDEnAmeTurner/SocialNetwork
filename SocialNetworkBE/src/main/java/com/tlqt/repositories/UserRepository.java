@@ -14,6 +14,10 @@ import java.util.List;
 public interface UserRepository {
 
     List<User> getUsers();
+    
+    List<String> getAllEmails();
+    
+    List<Object[]> getAllEmailsAndRelatedInfo();
 
     User getUserByUsername(String username);
 
@@ -28,12 +32,20 @@ public interface UserRepository {
     List<Object[]> getAlumniAndRelatedInfo();
 
     List<Object[]> getLecturersAndRelatedInfo();
-    
+
     User getAuthorByPostId(int postId);
-    
+
     User getUserById(int id);
-    
+
     User getUserByCommentId(int commentId);
-    
+
     void update(User user);
+
+    public List<User> getUsersByUsername(String queryName);
+
+    List<Object[]> countUsersByYear(int startYear, int endYear);
+
+    List<Object[]> countUsersByMonth(int year);
+
+    List<Object[]> countUsersByQuarter(int year);
 }

@@ -1,0 +1,17 @@
+.preview-content {
+  width: 310px;
+  margin-left: 10px;
+  font-size: 14px;
+  white-space: nowrap;
+  overflow-x: hidden;
+}
+
+.converPreview-container {
+  display: flex;
+  padding-bottom: 8px;
+  cursor: pointer;
+}
+
+.converPreview-container:hover {
+  background-color: rgba(18, 33, 95, 0.719);
+}

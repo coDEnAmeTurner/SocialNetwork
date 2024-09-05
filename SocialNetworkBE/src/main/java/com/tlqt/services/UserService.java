@@ -17,6 +17,10 @@ public interface UserService extends UserDetailsService {
 
     List<User> getUsers();
 
+    List<String> getAllEmails();
+
+    List<Object[]> getAllEmailsAndRelatedInfo();
+
     User getUserByUsername(String username);
 
     User getUserByUsernameAndPassword(String username, String password);
@@ -32,11 +36,18 @@ public interface UserService extends UserDetailsService {
     public List<Object[]> getLecturersAndRelatedInfo();
 
     User getAuthorByPostId(int postId);
-    
+
     User getUserById(int id);
-    
+
     User getUserByCommentId(int commentId);
-    
+
     void update(User user, Boolean newPass);
 
+    public List<User> getUsersByUsername(String queryName);
+
+    List<Object[]> countUsersByYear(int startYear, int endYear);
+
+    List<Object[]> countUsersByMonth(int year);
+
+    List<Object[]> countUsersByQuarter(int year);
 }

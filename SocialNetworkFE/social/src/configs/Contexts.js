@@ -11,4 +11,8 @@ export const EditPostContext = createContext();
 export const CommentsContext = createContext();
 export const EditComContext = createContext();
 export const IsEditContext = createContext();
-
+export const FrbUserContext = createContext();
+export const RoomContext = createContext();
+export const ConversationsContext = createContext();
+export const ChosenConversationContext = createContext();
+export const PickedConverContext = createContext();

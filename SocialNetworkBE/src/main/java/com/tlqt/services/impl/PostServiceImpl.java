@@ -56,4 +56,30 @@ public class PostServiceImpl implements PostService{
     public long countPostsByUserId(int userId) {
         return postRepo.countPostsByUserId(userId);
     }
+
+    @Override
+    public List<Post> getPostsByCategoryId(int categoryId) {
+        return postRepo.getPostsByCategoryId(categoryId);
+    }
+    
+        @Override
+    public List<Object[]> countPostsByYear(int startYear, int endYear) {
+        return postRepo.countPostsByYear(startYear, endYear);
+    }
+
+    @Override
+    public List<Object[]> countPostsByMonth(int year) {
+        return postRepo.countPostsByMonth(year);
+    }
+
+    @Override
+    public List<Object[]> countPostsByQuarter(int year) {
+        return postRepo.countPostsByQuarter(year);
+
+    }
+
+    @Override
+    public List<Post> getAllPostsByDescendingUpdatedAt() {
+        return this.postRepo.getAllPostsByDescendingUpdatedAt();
+    }
 }

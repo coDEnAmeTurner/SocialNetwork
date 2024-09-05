@@ -18,4 +18,6 @@ public interface QuestionRepository {
     SurveyQuestion getSurveyQuestionById(int id);
     void update(SurveyQuestion sq);
     void delete(SurveyQuestion sq);
+    List<Object[]> getQuestionStatsBySurveyId(int surveyId);
+    List<Object[]> countVotesPerChoice(int questionId);
 }

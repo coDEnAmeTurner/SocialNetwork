@@ -34,10 +34,11 @@ public class Vote implements Serializable {
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected VotePK votePK;
+    
+    @JsonIgnore
     @JoinColumn(name = "choice_id", referencedColumnName = "id")
     @ManyToOne(optional = false)
     private Choice choiceId;
-
     @JsonIgnore
     @JoinColumn(name = "survey_question_id", referencedColumnName = "id", insertable = false, updatable = false)
     @ManyToOne(optional = false)

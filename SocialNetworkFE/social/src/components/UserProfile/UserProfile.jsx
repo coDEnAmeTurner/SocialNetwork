@@ -114,7 +114,7 @@ const UserProfile = (props) => {
   useEffect(() => {
     getPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user]);
+  }, [user, editPost, fullPost]);
 
   return (
     <section className="userprofile-container">
@@ -122,42 +122,52 @@ const UserProfile = (props) => {
         <Register />
       ) : (
         <>
-          <Header />
-
           <FullPostContext.Provider value={[fullPost, fullPostDispatch]}>
             <EditPostContext.Provider value={[editPost, editPostDispatch]}>
               {fullPost?.open && <FullPost />}
               {editPost?.open && <EditPost />}
+
+              <Header />
+
               <div
                 className="follow-container"
-                style={{ boxShadow: `0px 0px 10px 3px ${user?.theme}`, marginTop: "12px" }}
+                style={{
+                  boxShadow: `0px 0px 10px 3px ${user?.theme}`,
+                  marginTop: "12px",
+                }}
               >
                 <div
                   className="follower"
                   style={{ borderRight: `1px solid ${user?.theme}` }}
                 >
                   <p className="follower-num">
-                    {user?.postCount?user.postCount: 0}
+                    {user?.postCount ? user.postCount : 0}
                   </p>
                   <p className="follower-title">Post Count</p>
                 </div>
                 <div className="following">
                   <p className="following-num">
                     {" "}
-                    {user?.createdAt ?
-                    <ReactTimeago
-                      className="comment-date"
-                      date={user.createdAt}
-                      minPeriod={60}
-                    />:<>unknown</>}{" "}
+                    {user?.createdAt ? (
+                      <ReactTimeago
+                        className="comment-date"
+                        date={user.createdAt}
+                        minPeriod={60}
+                      />
+                    ) : (
+                      <>unknown</>
+                    )}{" "}
                   </p>
                   <p className="following-title"> Been Around Since</p>
                 </div>
               </div>
               <section className="homepage-container">
-                <div className="homepage-post" style={{
-                   backgroundImage: `linear-gradient(90deg, #0B1129ff, #0F1F46ff, ${user.theme} 50%, #0F1F46ff, #0B1129ff)`
-                }}>
+                <div
+                  className="homepage-post"
+                  style={{
+                    backgroundImage: `linear-gradient(90deg, #0B1129ff, #0F1F46ff, ${user.theme} 50%, #0F1F46ff, #0B1129ff)`,
+                  }}
+                >
                   {posts && posts.length > 0 ? (
                     <>
                       {posts.map((post, idx) => {

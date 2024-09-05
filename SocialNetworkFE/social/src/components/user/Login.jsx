@@ -7,35 +7,54 @@ import APIs, { authApi, endpoints } from "../../configs/APIs";
 import { MyUserContext } from "../../configs/Contexts";
 import cookie from "react-cookies";
 import { AxiosError } from "axios";
+import {
+  addDoc,
+  collection,
+  onSnapshot,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "../../firebase";
+import { v4 as uuidv4 } from "uuid";
+import { FastField } from "formik";
 
-export const getCurrentUser = (userDispatch, navigate) => {
+export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
   //fetch real api returning current user
   let entireU = {};
   setTimeout(async () => {
     try {
-    
       let u = await authApi().get(endpoints["current-user"]);
-      
+
       let ur = await authApi().get(endpoints["get-user-role"]);
-      
-      
+
       if (u.status === 200 && ur.status === 200) {
-        entireU = { ...u.data, userRole: { ...ur.data }};
-        
+        if (ur.data.roleName === "lecturer") {
+          try {
+            await authApi().get(endpoints["check-locked"]);
+          } catch (ex) {
+            if (ex instanceof AxiosError) {
+              navigate("/landingPage");
+              return;
+            }
+          }
+        }
+
+        entireU = { ...u.data, userRole: { ...ur.data } };
+
         if (ur.data.id !== 1) {
           let dRes = await authApi().get(
             endpoints["get-degree-by-userId"](u.data.id)
           );
           if (dRes.status === 200)
             entireU = { ...entireU, degree: { ...dRes.data } };
-          
+
           let rRes = await authApi().get(
             endpoints["get-rank-by-userId"](u.data.id)
           );
           if (rRes.status === 200)
             entireU = { ...entireU, rank: { ...rRes.data } };
         }
-        
+
         if (ur.data.id === 3) {
           let tRes = await authApi().get(
             endpoints["get-title-by-userId"](u.data.id)
@@ -43,7 +62,7 @@ export const getCurrentUser = (userDispatch, navigate) => {
           if (tRes.status === 200)
             entireU = { ...entireU, title: { ...tRes.data } };
         }
-        
+
         if (ur.data.id === 2) {
           let sIdRes = await authApi().get(
             endpoints["get-student-id-by-userId"](u.data.id)
@@ -52,20 +71,71 @@ export const getCurrentUser = (userDispatch, navigate) => {
             entireU = { ...entireU, studentId: sIdRes.data };
         }
       }
-      
-      let pc = await authApi().get(endpoints['count-posts']);
-      if (pc.status === 200) {
-        entireU = {...entireU, postCount: parseInt(pc.data)}
+
+      try {
+        let pc = await authApi().get(endpoints["count-posts"]);
+        if (pc.status === 200) {
+          entireU = { ...entireU, postCount: parseInt(pc.data) };
+        }
+      } catch (ex) {
+        console.error(ex);
       }
-      
+
+      const userQuery = await query(
+        collection(db, "users"),
+        where("username", "==", u.data.username)
+      );
+
+      onSnapshot(userQuery, async (userSnap) => {
+        if (!userSnap.empty) {
+          frbUserDispatch({
+            type: "set",
+            payload: userSnap.docs[0],
+          });
+        } else {
+          const newUuid = uuidv4();
+
+          await addDoc(collection(db, "users"), {
+            id: newUuid,
+            fullName: u.data.fullName,
+            email: u.data.email,
+            username: u.data.username,
+            createdAt: u.data.createdAt,
+            avatar: u.data.avatar,
+          });
+
+          const userQuery = await query(
+            collection(db, "users"),
+            where("username", "==", u.data.username)
+          );
+
+          onSnapshot(userQuery, (userSnap) => {
+            if (!userSnap.empty)
+              frbUserDispatch({
+                type: "set",
+                payload: userSnap.docs[0],
+              });
+          });
+        }
+      });
+
+      try {
+        const invis = await authApi().get(endpoints["get-inviIds"]);
+        if (invis.status === 200) {
+          entireU = { ...entireU, invis: invis.data };
+        }
+      } catch (ex) {
+        console.log(ex);
+      }
     } catch (ex) {
       console.error(ex);
     }
-    
+
     userDispatch({
       type: "login",
-      payload: { ...entireU},
+      payload: { ...entireU },
     });
+
     navigate("/");
   }, 100);
 };
@@ -80,6 +150,7 @@ const Login = () => {
   const navigate = useNavigate();
   // eslint-disable-next-line no-unused-vars
   const [user, userDispatch] = useContext(MyUserContext);
+  const [submitting, setSubmitting] = useState(false);
 
   const loginUser = async (user) => {
     //fetch real api returning token
@@ -90,16 +161,19 @@ const Login = () => {
         cookie.save("token", res.data);
 
         navigate("/");
-      } 
+      }
     } catch (ex) {
       if (ex instanceof AxiosError) {
+        setSubmitting(false);
         setErrorMsg(ex.response.data);
+        window.scroll(0, 0);
       }
     }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setSubmitting(true);
     const user = {
       username: username,
       password: password,
@@ -138,7 +212,23 @@ const Login = () => {
             classStyle="login-password"
           />
 
-          <button type="submit"> Continue </button>
+          {submitting ? (
+            <button
+              type="submit"
+              disabled
+              style={{
+                width: "60px",
+              }}
+            >
+              <span
+                class="spinner-grow spinner-grow-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          ) : (
+            <button type="submit"> Continue </button>
+          )}
         </form>
 
         <div className="login-register"> Don't have an account yet? </div>

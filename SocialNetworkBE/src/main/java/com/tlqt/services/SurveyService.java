@@ -16,4 +16,5 @@ public interface SurveyService {
     
     Survey getSurveyByPostId(int postId);
     
+    
 }

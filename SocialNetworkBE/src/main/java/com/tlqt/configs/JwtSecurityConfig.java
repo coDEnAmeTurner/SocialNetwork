@@ -69,14 +69,37 @@ public class JwtSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/api/login/").permitAll();
         http.authorizeRequests().antMatchers("/api/users/").permitAll();
         http.authorizeRequests().antMatchers("/api/content-types/").permitAll();
-        http.authorizeRequests().antMatchers("/api/degrees/").permitAll();
         http.authorizeRequests().antMatchers("/api/academic_ranks/").permitAll();
+        http.authorizeRequests().antMatchers("/api/degrees/").permitAll();
+        http.authorizeRequests().antMatchers("/api/choices/").permitAll();
+        http.authorizeRequests().antMatchers("/api/comments/").permitAll();
+        http.authorizeRequests().antMatchers("/api/titles/").permitAll();
+        
 
         http.antMatcher("/api/**").httpBasic().authenticationEntryPoint(restServicesEntryPoint()).and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/***").access("hasAuthority('admin') or hasAuthority('alumnus') or hasAuthority('lecturer')")
                 .antMatchers(HttpMethod.POST, "/api/***").access("hasAuthority('admin') or hasAuthority('alumnus') or hasAuthority('lecturer')")
-                .antMatchers(HttpMethod.DELETE, "/api/***").access("hasAuthority('admin') or hasAuthority('alumnus') or hasAuthority('lecturer')").and()
+                .antMatchers(HttpMethod.DELETE, "/api/***").access("hasAuthority('admin') or hasAuthority('alumnus') or hasAuthority('lecturer')")
+                .antMatchers(HttpMethod.POST, "/api/emails/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.DELETE, "/api/emails/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.PUT, "/api/invitations/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.PUT, "/api/invitations/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/posts/count-posts-by-year/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/posts/count-posts-by-month/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/posts/count-posts-by-quarter/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.PUT, "/api/questions/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.DELETE, "/api/questions/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/questions/{questionId}/count-votes/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/users/emails/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/users/emails-info/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.PATCH, "/api/users/{userId}/unlock-lecturer/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.PATCH, "/api/users/{userId}/approve-alumnus/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/users/check-locked/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/users/count-users-by-year/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/users/count-users-by-month/").access("hasAuthority('admin')")
+                .antMatchers(HttpMethod.GET, "/api/users/count-users-by-quarter/").access("hasAuthority('admin')")
+                .and()
                 .addFilterBefore(jwtAuthenticationTokenFilter(), UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling().accessDeniedHandler(customAccessDeniedHandler());
     }

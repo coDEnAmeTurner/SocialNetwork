@@ -1,7 +1,7 @@
 import axios from "axios";
 import cookie from "react-cookies";
 
-const BASE_URL = 'http://localhost:8288/SocialNetworkBE/';
+const BASE_URL = 'https://socialnetworkbe-latest.onrender.com/SocialNetworkBE-1.0-SNAPSHOT/';
 
 export const endpoints = {
     'register': '/api/users/',
@@ -37,6 +37,7 @@ export const endpoints = {
     'delete-comment': (commentId) => `/api/comments/${commentId}/`,
     'update-comment': (commentId) => `/api/comments/${commentId}/`,
     'do-action': (postId) => `/api/posts/${postId}/do-action/`,
+    'get-emails': (inviId) => `/api/invitations/${inviId}/get-emails/`,
     'update-user': (userId) => `/api/users/${userId}/`,
     'titles': "/api/titles/",
     'get-rank-by-userId': (userId) => `/api/users/${userId}/get-rank/`,
@@ -46,7 +47,15 @@ export const endpoints = {
     'update-user-avatar': (userId) => `/api/users/${userId}/update-avatar/`,
     'count-posts': `/api/users/count-posts/`,
     'vote': "/api/questions/vote/",
-    'get-vote': (questionId)=> `/api/questions/${questionId}/get-vote/`
+    'get-vote': (questionId)=> `/api/questions/${questionId}/get-vote/`,
+    'get-users-by-username': "/api/users/",
+    'get-all-users': "/api/users/all",
+    "check-locked": "/api/users/check-locked/",
+    "get-inviIds": "/api/users/get-inviIds/",
+    "create-email": "/api/emails/",
+    "delete-email": (emailId)=>`/api/emails/${emailId}/`,
+    "get-all-emails": "/api/users/emails/",
+    "get-all-emails-info": "/api/users/emails-info/"
 }
 
 export default axios.create({

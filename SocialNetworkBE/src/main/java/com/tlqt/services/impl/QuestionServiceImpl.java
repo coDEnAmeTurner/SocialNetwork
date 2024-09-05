@@ -45,5 +45,15 @@ public class QuestionServiceImpl implements QuestionService{
     public void delete(SurveyQuestion sq) {
         qRepo.delete(sq);
     }
+
+    @Override
+    public List<Object[]> getQuestionStatsBySurveyId(int surveyId) {
+        return qRepo.getQuestionStatsBySurveyId(surveyId);
+    }
+
+    @Override
+    public List<Object[]> countVotesPerChoice(int questionId) {
+        return qRepo.countVotesPerChoice(questionId);
+    }
     
 }
