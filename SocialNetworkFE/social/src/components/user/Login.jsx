@@ -16,6 +16,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { v4 as uuidv4 } from "uuid";
+import { FastField } from "formik";
 
 export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
   //fetch real api returning current user
@@ -91,10 +92,9 @@ export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
             type: "set",
             payload: userSnap.docs[0],
           });
-        }
-        else {
+        } else {
           const newUuid = uuidv4();
-    
+
           await addDoc(collection(db, "users"), {
             id: newUuid,
             fullName: u.data.fullName,
@@ -103,12 +103,12 @@ export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
             createdAt: u.data.createdAt,
             avatar: u.data.avatar,
           });
-    
+
           const userQuery = await query(
             collection(db, "users"),
             where("username", "==", u.data.username)
           );
-    
+
           onSnapshot(userQuery, (userSnap) => {
             if (!userSnap.empty)
               frbUserDispatch({
@@ -120,15 +120,13 @@ export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
       });
 
       try {
-        const invis = await authApi().get(endpoints['get-inviIds']);
+        const invis = await authApi().get(endpoints["get-inviIds"]);
         if (invis.status === 200) {
-          entireU = {...entireU, invis:invis.data}
+          entireU = { ...entireU, invis: invis.data };
         }
-
       } catch (ex) {
         console.log(ex);
       }
-      
     } catch (ex) {
       console.error(ex);
     }
@@ -137,6 +135,7 @@ export const getCurrentUser = (userDispatch, navigate, frbUserDispatch) => {
       type: "login",
       payload: { ...entireU },
     });
+
     navigate("/");
   }, 100);
 };
@@ -151,6 +150,7 @@ const Login = () => {
   const navigate = useNavigate();
   // eslint-disable-next-line no-unused-vars
   const [user, userDispatch] = useContext(MyUserContext);
+  const [submitting, setSubmitting] = useState(false);
 
   const loginUser = async (user) => {
     //fetch real api returning token
@@ -164,13 +164,16 @@ const Login = () => {
       }
     } catch (ex) {
       if (ex instanceof AxiosError) {
+        setSubmitting(false);
         setErrorMsg(ex.response.data);
+        window.scroll(0, 0);
       }
     }
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    setSubmitting(true);
     const user = {
       username: username,
       password: password,
@@ -209,7 +212,23 @@ const Login = () => {
             classStyle="login-password"
           />
 
-          <button type="submit"> Continue </button>
+          {submitting ? (
+            <button
+              type="submit"
+              disabled
+              style={{
+                width: "60px",
+              }}
+            >
+              <span
+                class="spinner-grow spinner-grow-sm"
+                role="status"
+                aria-hidden="true"
+              ></span>
+            </button>
+          ) : (
+            <button type="submit"> Continue </button>
+          )}
         </form>
 
         <div className="login-register"> Don't have an account yet? </div>

@@ -1,9 +1,8 @@
-import ListGroup from "react-bootstrap/ListGroup";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import FeedLayout from "../Feed/Layout/FeedLayout";
-import APIs, { authApi, endpoints } from "../../configs/APIs";
+import { authApi, endpoints } from "../../configs/APIs";
 import Form from "react-bootstrap/Form";
 import Survey from "./Survey/Survey";
 import {
@@ -14,12 +13,10 @@ import {
 import { QuestionsReducer } from "../../configs/Reducers";
 import { useNavigate } from "react-router-dom";
 import { MakePostMode, SurveyMode } from "../../utils/accessMode";
-import cookie from "react-cookies";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import Spinner from "react-bootstrap/Spinner";
 import { Button } from "react-bootstrap";
-import { IoAddCircle } from "react-icons/io5";
-import { VscRemove } from "react-icons/vsc";
+import { TiDeleteOutline } from "react-icons/ti";
 
 let fileDict = {};
 let fileURLDict = {};
@@ -44,6 +41,7 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
   const [filteredMailList, setFilteredMailList] = useState([]);
   const [chosenMailList, setChosenMailList] = useState([]);
   const [mailOutFocus, setMailOutFocus] = useState(true);
+  const [mailOptionsOutFocus, setMailOptionsOutFocus] = useState(false);
 
   const navigate = useNavigate();
 
@@ -139,12 +137,12 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
         for (var key in fileURLDict) form.append("files", fileURLDict[key]);
       }
 
-      if (mailList) {
-        mailList.forEach((mail, index) => {
+      if (chosenMailList) {
+        chosenMailList.forEach((mail, index) => {
           form.append(`email${index}`, mail);
         });
 
-        form.append("mailCount", mailList.length);
+        form.append("mailCount", chosenMailList.length);
       }
 
       setTimeout(async () => {
@@ -227,8 +225,8 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
           throw new Error("invitation Request failed");
 
         await Promise.all(
-          mailList.map(async (mail) => {
-            if (mail.new) {
+          chosenMailList.map(async (mail) => {
+            if (mail.new && !mail.deleted) {
               const form = new FormData();
               form.append("email", mail.email);
               form.append("invitationId", `${currentPost.id}`);
@@ -246,7 +244,7 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
                 throw new Error("invitation Request failed");
             }
 
-            if (mail.deleted) {
+            if (mail.deleted && mail.id) {
               const mailDelRes = await authApi().delete(
                 endpoints["delete-email"](mail.id)
               );
@@ -353,7 +351,14 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
   }, []);
 
   useEffect(() => {
-    if (currentPost?.contentType?.id === 2) setMailList(currentPost.emails);
+    if (currentPost?.contentType?.id === 2) setChosenMailList(currentPost.emails.map((mail)=>{
+      return {
+        id: mail.id,
+        mail: mail.email,
+        new: false,
+        deleted: false
+      }
+    }));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -362,6 +367,10 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pickedCT]);
+
+  useEffect(()=>{
+    console.log(chosenMailList);
+  }, [chosenMailList]);
 
   const getAllEmails = async () => {
     if (pickedCT === "2") {
@@ -682,7 +691,7 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
                       },
                     });
                 }}
-                value={formik.values.datetime}
+                value={accessMode === MakePostMode.forEdit?editPost.post.dateTime:formik.values.datetime}
               />
               {formik.errors.datetime && (
                 <p className="errorMsg">{formik.errors.dateTime}</p>
@@ -690,14 +699,43 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
 
               <div style={{ position: "relative" }}>
                 <label className="Email"> Email: </label>
+
                 <div className="makepost-email">
                   {chosenMailList?.length > 0 ? (
-                    chosenMailList.map((chosenMail) => {
-                      return <div classname="chosen-mail">{chosenMail}</div>;
+                    chosenMailList.map((chosenMail, index) => {
+                      if (accessMode === MakePostMode.forEdit && !chosenMail.deleted) {
+                        return (
+                          <div className="the-chosen-mail">
+                            <div>
+                              {chosenMail.mail}
+                            </div>
+                            <TiDeleteOutline className="mail-remove-button" onClick={()=>{
+                              chosenMailList.at(index).deleted = true;
+                              const newList = [...chosenMailList];
+                              setChosenMailList(newList);
+                            }}/>
+                          </div>
+                        );
+                      }
+                      else if (accessMode === MakePostMode.forCreation)
+                        return (
+                          <div className="the-chosen-mail">
+                            <div>
+                              {chosenMail}
+                            </div>
+                            <TiDeleteOutline className="mail-remove-button" onClick={()=>{
+                              const newList = [...chosenMailList.slice(0, index), ...chosenMailList.slice(index + 1)];
+                              setChosenMailList(newList);
+                            }}/>
+                          </div>
+                        );
+                      else 
+                        return <></>
                     })
                   ) : (
                     <></>
                   )}
+
                   <input
                     className="makepost-email-input"
                     id="email"
@@ -725,12 +763,37 @@ const MakePost = ({ accessMode = MakePostMode.forCreation, currentPost }) => {
                 {formik.errors.email && (
                   <p className="errorMsg">{formik.errors.email}</p>
                 )}
-                {filteredMailList?.length > 0 && !mailOutFocus ? (
-                  <ul className="email-options">
+
+                {filteredMailList?.length > 0 &&
+                (!mailOutFocus || !mailOptionsOutFocus) ? (
+                  <ul
+                    className="email-options"
+                    onPointerEnter={() => {
+                      setMailOptionsOutFocus(false);
+                    }}
+                    onPointerLeave={() => {
+                      setMailOptionsOutFocus(true);
+                    }}
+                  >
                     {filteredMailList.map((mail) => {
-                      return <li className="email-options-item" onClick={(e)=>{
-                        setChosenMailList([...chosenMailList, mail])
-                      }}>{mail}</li>;
+                      return (
+                        <li
+                          className="email-options-item"
+                          onClick={() => {
+                            if (
+                              (accessMode === MakePostMode.forCreation && !chosenMailList.includes(mail)) 
+                              || 
+                              (accessMode === MakePostMode.forEdit && !chosenMailList.map((listItem)=>{if(!listItem.deleted) return listItem.mail; return ""}).includes(mail)) 
+                            ) {
+                              const newList = structuredClone(chosenMailList);
+                              newList.push(accessMode === MakePostMode.forEdit?{mail:mail, new:true}:mail);
+                              setChosenMailList(newList);
+                            }
+                          }}
+                        >
+                          {mail}
+                        </li>
+                      );
                     })}
                   </ul>
                 ) : (

@@ -150,7 +150,8 @@ const HomePage = () => {
             <div className="homepage-post">
               {fullPost?.open && <FullPost />}
               {editPost?.open && <EditPost />}
-              {posts.length > 0 ? (
+
+              {posts.length > 0 && !fullPost.open && !editPost.open ? (
                 posts.map((post, idx) => {
                   if (posts.length === idx + 1) {
                     return <Posts key={posts?._id} post={post} />;
@@ -158,6 +159,7 @@ const HomePage = () => {
                   return <Posts key={posts?._id} post={post} />;
                 })
               ) : (
+                posts.length === 0?
                 <div
                   style={{
                     display: "flex",
@@ -165,7 +167,7 @@ const HomePage = () => {
                   }}
                 >
                   <div class="spinner-grow "></div>
-                </div>
+                </div> : <></>
               )}
             </div>
           </section>

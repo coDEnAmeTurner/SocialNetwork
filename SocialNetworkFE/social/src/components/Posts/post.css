@@ -59,8 +59,11 @@
 
 .makepost-email {
   display: grid;
+  padding: .8vw;
+  overflow-x: auto;
   grid-template-columns: repeat(4, 1fr);
-  grid-auto-rows: minmax(4vw, auto);
+  grid-auto-rows: minmax(.5vw, auto);
+  grid-gap: 1vw;
   background-color: #535353;
   color: white;
   border: none;
@@ -71,16 +74,52 @@
   border-radius: 4px;
 }
 
-.makepost-email-input {
-  grid-column-start: 1;
-  grid-column-end: 2;
+input#email.makepost-email-input {
   display: block;
+  width: 13vw;
   background-color: #535353;
   color: white;
   border: none;
+  margin: 0;
+  padding: 0;
   font-size: 1.15rem;
   font-family: "Noto Sans", sans-serif;
   border-radius: 4px;
+}
+
+.email-options {
+  display: block;
+  background-color: #535353;
+  padding: 0.4rem;
+  border-radius: 5px;
+}
+
+.the-chosen-mail {
+  display: flex;
+  align-items: center;
+}
+
+.the-chosen-mail, .email-options-item {
+  border-radius: 5px;
+  list-style-type: none;
+  padding: 0.3rem;
+  bottom: 5px;
+}
+
+.mail-remove-button {
+  border-radius: 5px;
+  padding: 0.12rem;
+  margin-left: 0.2vw;
+}
+
+.mail-remove-button:hover {
+  background-color: #773333;
+  cursor: pointer;
+} 
+
+.the-chosen-mail:hover, .email-options-item:hover {
+  background-color: #7c7b7b;
+  cursor: pointer;
 }
 
 .makepost-title {
@@ -376,21 +415,3 @@ input[type="checkbox"] {
 }
 
 
-.email-options {
-  display: block;
-  background-color: #535353;
-  padding: 0.4rem;
-  border-radius: 5px;
-}
-
-.email-options-item {
-  border-radius: 5px;
-  list-style-type: none;
-  padding: 0.3rem;
-  bottom: 5px;
-}
-
-.email-options-item:hover {
-  background-color: #7c7b7b;
-  cursor: pointer;
-}
